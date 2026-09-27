@@ -45,6 +45,7 @@ import {drawAssetTree,drawAssetProp,drawAssetEffect,drawAssetFire} from './asset
 import {drawHub,drawOccupiedCamp,drawEstateDetail} from './world-details.js';
 import {drawProp,campProps,baseProps,propBaseline} from './world-prop-ui.js';
 import {createTerrainChunk} from './terrain.js';
+import {groundTile} from './maifeld-art.js';
 import {fountain,wildlife} from './atmosphere.js';
 import {drawComicResident as drawResidentSprite} from './comic-actors.js';
 import {drawClanHero as drawHero,drawClanEnemy as drawComicEnemy,drawClanCamp,clanSignBounds} from './clan-art.js';
@@ -198,8 +199,30 @@ export class Renderer {
   /** Je Bild: Laufrichtung merken und nur dann ein dringendes Stück bauen, wenn der Leerlauf nicht reicht. Das eigentliche Vorausladen läuft im
    *  Leerlauf des Browsers (requestIdleCallback) – also erst, wenn das Bild abgegeben ist, und nie in die nächste Bildzeit hinein. */
   idle(){if(!this.viewOrigin||inKiosk(this.game)||inDungeon(this.game))return;const P=this.prefetch||=new TerrainPrefetch(this.world,PERFORMANCE.terrain),view={ox:this.viewOrigin.x,oy:this.viewOrigin.y,W:this.viewWidth,H:this.viewHeight},key=(gx,gy)=>gx+','+gy+bakedGrade.filter,has=k=>this.chunks.has(k),done=(k,cv)=>this.storeChunk(k,cv);
+    this.prefetchSprites();/* Runde 2: Sprites am Sichtrand beim Sprite-Worker vorbestellen */
+    /* Runde 2: Bodenstücke baut ein Worker (terrain-worker.js); der Hauptfaden bestellt nur vor und baut selbst nur noch, was der Bodenstreifen sofort braucht (groundTile → ensure) */if(!P.remote&&!this.terrainWorkerTried)this.startTerrainWorker(P);if(P.remote){P.pump(view,key,has,done);return;}
     P.step(view,0,key,has,done);if(this.idleStarved>2)P.urgent(view,key,has,done);this.idleStarved=(this.idleStarved||0)+1;
     if(!this.idleQueued&&typeof requestIdleCallback==='function'){this.idleQueued=true;requestIdleCallback(d=>{this.idleQueued=false;const ms=d.timeRemaining()-PERFORMANCE.terrain.idleReserveMs;if(ms>0){this.idleStarved=0;P.step(view,ms,key,has,done);}},{timeout:PERFORMANCE.terrain.idleTimeoutMs});}}
+  /** Runde 2 (sprite-jobs.js): Bäume, Steine, Schilder und Häuser kurz vor dem Sichtrand – 250 E rundum, 500 E in Laufrichtung – beim
+   *  Sprite-Worker vorbestellen, damit das erste Zeichnen nicht im Bild rastern muss. Dazu laufen ihre Zeichenfunktionen gegen eine stumme
+   *  Leinwand (prefetchOnly): gleiche Schlüssel wie beim echten Zeichnen, gezeichnet wird nichts. Höchstens alle 250 ms. */
+  prefetchSprites(now=performance.now()){if(!this.viewOrigin||now-(this.spritePrefetchAt||0)<250)return;this.spritePrefetchAt=now;
+   const s=this.density,ctx=this.prefetchCtx||=new Proxy({},{get:(t,k)=>k==='prefetchOnly'?true:k==='getTransform'?()=>new DOMMatrix([t.scale,0,0,t.scale,0,0]):k==='scale'?t.scale:k==='canvas'?{width:1,height:1}:()=>{},set:(t,k,v)=>{if(k==='scale')t.scale=v;return true;}});ctx.scale=s;
+   const {x:ox,y:oy}=this.viewOrigin,W=this.viewWidth,H=this.viewHeight,m=this.prefetch?.motion||{dx:0,dy:0},R=250,L=500,x0=ox-R+Math.min(0,m.dx*L),x1=ox+W+R+Math.max(0,m.dx*L),y0=oy-R+Math.min(0,m.dy*L),y1=oy+H+R+Math.max(0,m.dy*L);
+   const w=this.world,index=this.index||=new SpatialIndex(),time=this.game.time;
+   try{for(const t of index.query('trees',w.trees,x0,y0,x1,y1))drawAssetTree(ctx,t,time);for(const p of index.query('props',w.props,x0,y0,x1,y1))if(p.type==='rock')drawAssetProp(ctx,p);
+    for(const b of w.buildings)if(b.maxX>x0&&b.minX<x1&&b.maxY>y0&&b.minY-150<y1)drawBuilding(ctx,b,time);}catch(e){this.spritePrefetchAt=now+60000;console.error('Sprite-Vorbestellung',e);}}
+  /** Boden-Worker starten (Runde 2): braucht Worker + OffscreenCanvas und die fertigen Bodentexturen; sonst bleibt alles im Hauptfaden. */
+  startTerrainWorker(P){if(typeof Worker!=='function'||typeof OffscreenCanvas!=='function'||typeof createImageBitmap!=='function'||globalThis.__terrainWorker===false){this.terrainWorkerTried=true;return;}
+   const names=['groundGrass','groundDirt','groundPaving'],tiles=names.map(n=>groundTile(n));if(tiles.some(t=>!t))return;/* Texturen laden noch: nächstes Bild erneut */this.terrainWorkerTried=true;
+   const w=this.world;let slim;try{slim={roads:w.roads,areas:w.areas,water:w.water,plaza:w.plaza,gardens:w.gardens||[],camps:w.camps,width:w.width,height:w.height,
+    buildings:w.buildings.map(b=>({id:b.id,minX:b.minX,maxX:b.maxX,minY:b.minY,maxY:b.maxY,church:b.church,door:b.door&&{x:b.door.x,y:b.door.y}})),
+    grid:new Map([...w.grid].map(([k,list])=>[k,list.map(o=>o.radius?{x:o.x,y:o.y,radius:o.radius}:{minX:o.minX,minY:o.minY,maxX:o.maxX,maxY:o.maxY})])),roadGrid:w.roadGrid};}catch{return;}
+   Promise.all(tiles.map(t=>createImageBitmap(t))).then(bmps=>{let worker;try{worker=new Worker(new URL('./terrain-worker.js',import.meta.url),{type:'module'});}catch{return;}
+    const cbs=new Map();let seq=1;const stop=()=>{P.remote=null;for(const cb of cbs.values())cb(null);cbs.clear();worker.terminate();};
+    worker.onmessage=e=>{const d=e.data;if(d.type==='failed'){stop();return;}const cb=cbs.get(d.id);if(!cb)return;cbs.delete(d.id);cb(d.bmp||null);};worker.onerror=stop;
+    try{worker.postMessage({type:'init',world:slim,tiles:Object.fromEntries(names.map((n,i)=>[n,bmps[i]]))},bmps);}catch{worker.terminate();return;}
+    P.useRemote({send:(job,cb)=>{const id=seq++;cbs.set(id,cb);worker.postMessage({type:'job',id,...job});}});this.terrainWorker=worker;}).catch(()=>{});}
   /** Auflösungs-Automatik (quality-governor.js): je Bild mit Bildabstand und eigener Rechenzeit füttern; senkt oder hebt die Dichte der Weltfläche stufenweise. */
   pace(gap,work){const s=this.game.settings||{};if(s.lowRes&&!s.fullRes){if(this.density!==LOW_RES_DENSITY)this.resize();return;}if(s.fullRes||s.autoRes===false){this.gradeOff=false;if(this.densityCap!=null){this.densityCap=null;this.resize();}return;}
     const step=(this.governor||=new QualityGovernor(PERFORMANCE.autoRes)).frame(gap,work);if(!step)return;const native=worldDensity(this.zoom,false);

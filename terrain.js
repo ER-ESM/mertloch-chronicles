@@ -1,7 +1,6 @@
 import {fillMaifeldGround} from './maifeld-art.js';
-import {groundDetails} from './world-details.js';
 import {shape as comicShape,box,oval} from './pixel-style.js';
-import {segmentDistance,inside} from './world.js';
+import {segmentDistance,inside} from './world-geometry.js';/* nicht world.js: der Boden-Worker lädt dieses Modul ohne das ganze Spiel */
 export const TERRAIN_SIZE=512;
 export const DETAIL=2;
 const canvas=(size=TERRAIN_SIZE)=>{const c=document.createElement('canvas');c.width=c.height=size*DETAIL;return c;};
@@ -32,6 +31,9 @@ function areaMask(a,ox,oy,size,feather=3){
   const out=take(size*DETAIL),oc=out.getContext('2d');oc.filter=`blur(${feather*DETAIL}px)`;
   oc.drawImage(cv,-border*DETAIL,-border*DETAIL);oc.filter='none';give(cv);return out;
 }
+/** Erdflecken um Lager (vorher world-details.js, Runde 2 hierher, damit terrain.js ohne die Weltlogik auskommt). */
+export function groundDetails(c,w,ox,oy,S){
+ for(const camp of w.camps){if(camp.x<ox-160||camp.x>ox+S+160||camp.y<oy-140||camp.y>oy+S+140)continue;for(let i=0;i<55;i++){const a=i*2.399,radius=19+Math.sqrt(i/55)*103,x=camp.x+Math.cos(a)*radius,y=camp.y+Math.sin(a)*radius*.7;c.save();c.beginPath();c.ellipse(x,y,9+i%8,5+i%5,0,0,Math.PI*2);c.clip();fillMaifeldGround(c,'groundDirt',x-18,y-12,36,24,.18);c.restore();}}}
 export function createTerrainChunk(world,gx,gy){return createTerrainRegion(world,gx*TERRAIN_SIZE,gy*TERRAIN_SIZE);}
 export function createTerrainRegion(world,ox,oy,S=TERRAIN_SIZE){
   const cv=canvas(S),c=cv.getContext('2d',{alpha:false}),roads=world.roads.filter(r=>r.maxX>ox-96&&r.minX<ox+S+96&&r.maxY>oy-96&&r.minY<oy+S+96);

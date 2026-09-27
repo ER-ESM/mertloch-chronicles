@@ -8,6 +8,12 @@ export const frameSegments={on:false,t:0,data:new Map(),frames:0,
  begin(){if(this.on){this.t=performance.now();this.frames++;}},
  /** Zeit seit dem letzten Aufruf dem Abschnitt `name` zuschreiben. */
  mark(name){if(!this.on)return;const now=performance.now();let a=this.data.get(name);if(!a)this.data.set(name,a=[]);a.push(now-this.t);if(a.length>4000)a.shift();this.t=now;},
- report(){const ms={};for(const [k,a] of this.data){const s=[...a].sort((x,y)=>x-y),n=s.length,r=v=>Math.round(v*100)/100;ms[k]={mean:r(s.reduce((x,y)=>x+y,0)/Math.max(1,n)),p95:r(s[Math.floor(n*.95)]||0),max:r(s[n-1]||0),n};}return {frames:this.frames,ms};}
+ report(){const ms={},r=v=>Math.round(v*100)/100;for(const [k,a] of this.data){const s=[...a].sort((x,y)=>x-y),n=s.length;ms[k]={mean:r(s.reduce((x,y)=>x+y,0)/Math.max(1,n)),p95:r(s[Math.floor(n*.95)]||0),max:r(s[n-1]||0),n};}
+  // langsamste Bilder mit ihren Abschnitten (alle Abschnitte laufen in jedem Bild, also gleiche Länge)
+  const keys=[...this.data.keys()],n=Math.min(...keys.map(k=>this.data.get(k).length));let worst=[];if(keys.length&&n>0){const tot=[];for(let i=0;i<n;i++){let t=0;for(const k of keys)t+=this.data.get(k)[i];tot.push([t,i]);}tot.sort((x,y)=>y[0]-x[0]);worst=tot.slice(0,8).map(([t,i])=>({ms:r(t),...Object.fromEntries(keys.filter(k=>this.data.get(k)[i]>=1).map(k=>[k,r(this.data.get(k)[i])]))}));}
+  return {frames:this.frames,ms,worst};}
 };
 try{if(new URLSearchParams(location.search).get('perf')==='segments')frameSegments.enable(true);}catch{}
+// Diagnose Rechen-Worker (Handy-Leistung Runde 2): ?noworker=all schaltet Anziehpuppen-, Boden- und Sprite-Worker ab (alles wie vorher im
+// Hauptfaden), ?noworker=paperdoll,terrain,sprite einzelne – zum Vergleichen auf dem Gerät und in scripts/perf-handy.mjs.
+try{const off=new URLSearchParams(location.search).get('noworker');if(off!=null)for(const k of off==='all'||off===''?['paperdoll','terrain','sprite']:off.split(','))globalThis['__'+k.trim()+'Worker']=false;}catch{}

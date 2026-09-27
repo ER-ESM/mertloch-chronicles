@@ -2,8 +2,9 @@
 // Bögen aus tools/paperdoll (node tools/paperdoll/puppe.mjs --runtime): je Quelle (Körper, Dutt, Aussehen, Gegenstand) × Archetyp × Richtung
 // ein Grundbogen (Stehen/Blinzeln/Laufen) und ein Aktionsbogen (Kampf, Zaubern, Rasten …), Zeilen = Tiefenbänder der Quelle. Zusammengesetzt wird zur Laufzeit mit demselben Kern wie im Werkzeug (paperdoll-kern.js), dann
 // Haut/Haar über die Farbtreppen umgefärbt und für die Welt hochwertig verkleinert (Flächenmittel → Palette → Kontur).
-import {composeCore,sources as orderSources,useShade,gluecksbringerWahl} from './paperdoll-kern.js';
-import {shrinkPixels} from './paperdoll-shrink.js';
+import {useShade,gluecksbringerWahl} from './paperdoll-kern.js';
+import {shrinkPixels,makeSnap,tintPalette} from './paperdoll-shrink.js';
+import {makeTiles,composeFigure,layersOf,sheetKeyOf,sheetsFor,partOf as partOfCat,baseDirOf} from './paperdoll-tiles.js';
 
 // stats: Diagnose (Konsole: (await import('./paperdoll-art.js')).paperdoll.stats) – zusammengesetzt, vorgewärmt, per Budget vertagt, Rückfall auf alten Weg
 export const paperdoll={ready:false,catalog:null,images:new Map(),missing:new Set(),version:0,failed:false,stats:{composed:0,warmed:0,deferred:0,legacy:0}};
@@ -21,12 +22,12 @@ let pending;
 // NPC-Kleidung lädt danach leise im Hintergrund, Ausrüstung und Aktionsbilder beim ersten Gebrauch.
 const loading=new Map(),listeners=new Set();let notifyTimer=0;
 // part 0 Grundbogen, 1 Aktionsbogen (-akt), 2 Sonderbogen (-sonder: Ansagen der Dungeon-Figuren, cat.sonder, Bildnummern ab cat.frames.length)
-const sheetKey=(src,arch,dir,part)=>`${src}-${arch}${paperdoll.catalog.dirs[dir]}${part===2?'-sonder':part?'-akt':''}`;
+const sheetKey=(src,arch,dir,part)=>sheetKeyOf(paperdoll.catalog,src,arch,dir,part);
 /** Teil eines Bilds: 2 = Sonderbild (ab cat.frames.length), 1 = Aktionsbild (ab cat.split), 0 = Grundbild. */
-const partOf=(cat,f)=>f>=cat.frames.length?2:f>=(cat.split??cat.frames.length)?1:0;
+const partOf=partOfCat;
 // sw/ne: eigener Bogen nur für seitenabhängige Quellen (cat.own), sonst gespiegeltes se/nw. Aktionsbilder hängen an der Waffenseite und
 // haben für sw/ne eigene Bögen (cat.ownAkt), damit Körper und Kleidung in derselben Pose stehen.
-const baseDir=(src,dir,part=0)=>{if(dir!=='sw'&&dir!=='ne'||part===2)return dir;const cat=paperdoll.catalog;return cat.own[dir].includes(src)||part&&cat.ownAkt?.[dir]?.includes(src)?dir:dir==='sw'?'se':'nw';};
+const baseDir=(src,dir,part=0)=>baseDirOf(paperdoll.catalog,src,dir,part);
 /** Meldet, wenn nachgeladene Bögen da sind (Standbilder wie Heldenkarten oder Figurenfenster zeichnen dann neu). */
 /** Einen Bogen des Laufzeitordners nach Bedarf holen (Motive der Dungeon-Figuren, dungeon-figuren-art.js): Promise auf das Bild bzw. null. */
 export function loadPaperdollSheet(key,low=false){return paperdoll.images.has(key)?Promise.resolve(paperdoll.images.get(key)):paperdoll.missing.has(key)?Promise.resolve(null):want(key,low);}
@@ -145,33 +146,23 @@ export function lookSources(tint,items=[]){if(!tint)return [];const cat=paperdol
  return out;}
 
 // ---------- Zusammensetzen ----------
-const tileCanvas=typeof document!=='undefined'?document.createElement('canvas'):null,tctx=tileCanvas?.getContext('2d',{willReadFrequently:true});
-// Kachelspeicher: jede Kachel (Bogen × Band × Bild × Spiegelung) wird einmal ausgelesen und auf ihren Inhalt zugeschnitten; viele Figuren
-// teilen sich Körper-, Hosen- und Schuhkacheln. Grenze nach Bytes (LRU), leere Kacheln merken sich nur „leer“.
-const tileCache=new Map(),TILE_BYTES=48e6;let tileBytes=0;
-function tile(arch,src,dir,band,f){const cat=paperdoll.catalog,{W,H}=cat,split=cat.split??cat.frames.length,part=partOf(cat,f),base=baseDir(src,dir,part),mirror=base!==dir;
- const sk=sheetKey(src,arch,base,part),img=paperdoll.images.get(sk);if(!img)return null;const rows=cat.layout==='bands'?(cat.sources[src]?.bands||cat.bands):cat.bands,row=rows.indexOf(band);if(row<0)return null;
- const key=sk+'|'+row+'|'+f+(mirror?'|m':''),hit=tileCache.get(key);if(hit!==undefined){tileCache.delete(key);tileCache.set(key,hit);return hit;}
- // Zelle der Quelle (Katalog ab version 3: Bögen nur so groß wie der Inhalt der Quelle); ältere Bögen = volle Leinwand
- const cell=(part===2?cat.sources[src]?.sonder?.cell:cat.sources[src]?.cell)||{x:0,y:0,w:W,h:H},cw=cell.w,ch=cell.h;
- if(tileCanvas.width<cw||tileCanvas.height<ch){tileCanvas.width=Math.max(tileCanvas.width,cw);tileCanvas.height=Math.max(tileCanvas.height,ch);}
- tctx.clearRect(0,0,cw,ch);tctx.save();if(mirror){tctx.translate(cw,0);tctx.scale(-1,1);}
- tctx.drawImage(img,(part===2?f-cat.frames.length:part?f-split:f)*cw,row*ch,cw,ch,0,0,cw,ch);tctx.restore();const d=tctx.getImageData(0,0,cw,ch).data;
- let x0=cw,y0=ch,x1=-1,y1=-1;for(let y=0;y<ch;y++)for(let x=0;x<cw;x++)if(d[(y*cw+x)*4+3]){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;y1=y;}
- // Lage auf der Leinwand: gespiegelt liegt die Zelle bei W-cell.x-cell.w
- const cx=mirror?W-cell.x-cw:cell.x,cy=cell.y;
- let t=null;if(x1>=0){const w=x1-x0+1,h=y1-y0+1,data=new Uint8ClampedArray(w*h*4);for(let y=0;y<h;y++)data.set(d.subarray(((y+y0)*cw+x0)*4,((y+y0)*cw+x0+w)*4),y*w*4);t={data,x:cx+x0,y:cy+y0,w,h};tileBytes+=data.length;}
- tileCache.set(key,t);while(tileBytes>TILE_BYTES&&tileCache.size){const [k,v]=tileCache.entries().next().value;tileCache.delete(k);if(v)tileBytes-=v.data.length;}
- return t;}
+// Kachelspeicher und Zusammensetzen: paperdoll-tiles.js (gemeinsam mit dem Rechen-Worker paperdoll-worker.js).
+let auditRun=0;/* compareWorker: eigener Schlüssel je Vergleich */
+const mainTiles=makeTiles({getImage:k=>paperdoll.images.get(k)||null,makeCanvas:()=>document.createElement('canvas')});
 // Diagnose (Konsole): (await import('./paperdoll-art.js')).paperdoll.debug.compose('dieter','se',5,['kutte','jeans']) setzt ohne Speicher zusammen und misst.
-paperdoll.debug={compose:(arch,dir,f,srcs)=>{const t0=performance.now();composed(arch,dir,f,new Set(['koerper',...srcs]),'debug|'+Math.random());return performance.now()-t0;},clearTiles:()=>{tileCache.clear();tileBytes=0;},tiles:()=>({count:tileCache.size,mb:+(tileBytes/1e6).toFixed(1)})};
+paperdoll.debug={compose:(arch,dir,f,srcs)=>{const t0=performance.now();composed(arch,dir,f,new Set(['koerper',...srcs]),'debug|'+Math.random());return performance.now()-t0;},clearTiles:()=>mainTiles.clear(),tiles:()=>mainTiles.stats(),/** Prüfung: die letzten n Worker-Bilder im Hauptfaden nachrechnen und Pixel vergleichen (tests/…, perf-handy). */
+compareWorker:async(n=20)=>{const list=(pdw.audit||[]).slice(-n),cat=paperdoll.catalog,run='audit'+(++auditRun)+'|';let px=0,diff=0,frames=0,bad=0,rawDiff=0,skipped=0;for(const {j,data,px:wpx} of list){
+  /* Bögen, die bisher nur der Worker geladen hat (andere Richtungen, Aktionsbilder), erst im Hauptfaden laden – sonst verglichen wir mit einem unvollständigen Bild */const keys=sheetsFor(cat,j.arch,j.dir,j.f,j.srcs);await Promise.all(keys.map(k=>loadPaperdollSheet(k)));if(keys.some(k=>!paperdoll.images.has(k))){skipped++;continue;}
+  const fr=composed(j.arch,j.dir,j.f,j.srcs,run+j.key);const pick=j.m.size?tintedSnap(j.m):snap,{W,H}=paperdoll.catalog,r=shrinkPixels(fr.px,fr.box,W,H,j.k,j.m,pick);frames++;let d=0;for(let i=0;i<r.data.length;i++)if(r.data[i]!==data[i])d++;if(d)bad++;diff+=d;px+=r.data.length;if(wpx){let dp=0;for(let i=0;i<fr.px.length;i++)if(fr.px[i]!==wpx[i])dp++;rawDiff+=dp;}}return {frames,skipped,bad,diffBytes:diff,bytes:px,rawDiff};},
+audit:on=>{pdw.audit=on?[]:null;},
+worker:()=>{pdw.w?.postMessage({type:'stats'});return {...pdw.stats,pending:pdw.jobs.size,failed:pdw.failed,bad:pdw.bad.size,last:pdw.last||null};}};
 const frameCache=new Map(),FRAME_LIMIT=60;// je Eintrag Pixelfeld (138 KB) + höchstens 2 Vollbilder; Weltbilder liegen in worldCache
 function remember(map,key,val,limit){map.set(key,val);if(map.size>limit)map.delete(map.keys().next().value);return val;}
 /** Zeichenfolge der Quellen (Kern) ohne doppelten Körper; Dutt nur bei Archetypen mit Dutt. */
-function layers(arch,srcs){const cat=paperdoll.catalog,rest=new Set(srcs);rest.delete('koerper');return orderSources(rest,cat.sources).filter(s=>s!=='dutt'||cat.archetypes[arch].dutt);}
+function layers(arch,srcs){return layersOf(paperdoll.catalog,arch,srcs);}
 function composed(arch,dir,f,srcs,key){const hit=frameCache.get(key);if(hit){frameCache.delete(key);frameCache.set(key,hit);return hit;}
  const cat=paperdoll.catalog,{W,H}=cat;
- paperdoll.stats.composed++;const px=composeCore(W,H,cat.bands,layers(arch,srcs),(s,band)=>{if(s==='dutt'&&band!=='kopf')return null;if(cat.sources[s]&&!cat.sources[s].bands.includes(band))return null;return tile(arch,s,dir,band,f);});
+ paperdoll.stats.composed++;const px=composeFigure(cat,mainTiles.tile,arch,dir,f,srcs);
  return remember(frameCache,key,{px,box:px.box,full:new Map()},FRAME_LIMIT);}
 /** Farbtreppen ersetzen (Haut/Haar); nur exakte Palettenfarben, daher vor der Kontur. */
 export function recolor(px,m){if(m.size)for(let i=0;i<px.length;i+=4){if(!px[i+3])continue;const c=m.get(px[i]<<16|px[i+1]<<8|px[i+2]);if(c){px[i]=c[0];px[i+1]=c[1];px[i+2]=c[2];}}return px;}
@@ -180,16 +171,12 @@ function full(fr,m,tk){let cv=fr.full.get(tk);if(cv)return cv;const {W,H}=paperd
  cv.getContext('2d').putImageData(new ImageData(recolor(new Uint8ClampedArray(fr.px),m),W,H),0,0);fr.full.set(tk,cv);if(fr.full.size>2)fr.full.delete(fr.full.keys().next().value);return cv;}
 
 // ---------- Weltgröße: Flächenmittel → nächste Palettenfarbe → Kontur (wie die Codex-Einpassung) ----------
-let PALETTE=[];const snapCache=new Map();
-function buildPalette(cat){PALETTE=cat.palette.map(k=>[k>>16,k>>8&255,k&255]);}
-/** Einrasten gegen die umgefärbte Palette (Haut/Haar des Editors), je Farbtabelle ein eigener Zwischenspeicher. */
+let PALETTE=[],baseSnap=null;
+function buildPalette(cat){PALETTE=cat.palette.map(k=>[k>>16,k>>8&255,k&255]);baseSnap=makeSnap(PALETTE);}
+/** Einrasten gegen die umgefärbte Palette (Haut/Haar des Editors); genau und reihenfolgeunabhängig (paperdoll-shrink.js makeSnap, Runde 2). */
 const tintedSnaps=new WeakMap();
-function tintedSnap(m){let f=tintedSnaps.get(m);if(f)return f;const pal=PALETTE.map(q=>m.get(q[0]<<16|q[1]<<8|q[2])||q),cache=new Map();
- f=(r,g,b)=>{const key=(r>>2)<<12|(g>>2)<<6|(b>>2);let c=cache.get(key);if(c)return c;let bd=1e18;for(const q of pal){const dr=r-q[0],dg=g-q[1],db=b-q[2],rm=(r+q[0])/2,d=(2+rm/256)*dr*dr+4*dg*dg+(2+(255-rm)/256)*db*db;if(d<bd){bd=d;c=q;}}cache.set(key,c);return c;};
- tintedSnaps.set(m,f);return f;}
-export function snap(r,g,b){const key=(r>>2)<<12|(g>>2)<<6|(b>>2);let c=snapCache.get(key);if(c)return c;let bd=1e18;
- for(const q of PALETTE){const dr=r-q[0],dg=g-q[1],db=b-q[2],rm=(r+q[0])/2,d=(2+rm/256)*dr*dr+4*dg*dg+(2+(255-rm)/256)*db*db;if(d<bd){bd=d;c=q;}}snapCache.set(key,c);return c;}
-/** Weltbild: Pixelrechnung in paperdoll-shrink.js (reine Funktion, testbar), hier nur Einraster und Leinwand. */
+function tintedSnap(m){let f=tintedSnaps.get(m);if(!f){f=makeSnap(tintPalette(PALETTE,m));tintedSnaps.set(m,f);}return f;}
+export function snap(r,g,b){return (baseSnap||=makeSnap(PALETTE))(r,g,b);}
 function shrunk(fr,k,m){const pick=m.size?tintedSnap(m):snap,{W,H}=paperdoll.catalog,r=shrinkPixels(fr.px,fr.box,W,H,k,m,pick);
  const s=document.createElement('canvas');s.width=r.w;s.height=r.h;s.getContext('2d').putImageData(new ImageData(r.data,r.w,r.h),0,0);return s;}
 
@@ -202,13 +189,13 @@ export function unitScale(arch){const cat=paperdoll.catalog,hs=Object.values(cat
 // Weltbilder (verkleinert, umgefärbt) je Zusammensetzung × Maßstab × Tönung: bei Treffer wird gar nicht zusammengesetzt.
 // Budget: höchstens BUDGET neue Weltbilder je Bild (~12 ms Fenster); darüber zeigt eine Figur ihr letztes Bild weiter,
 // damit viele NPCs beim ersten Anblick nicht ruckeln. Nahansichten (Editor, Porträt) laufen immer sofort.
-const worldCache=new Map(),WORLD_LIMIT=900,lastDrawn=new Map(),budget={f:-1,n:0};let frameNo=0,warming=false;
+const worldCache=new Map(),WORLD_LIMIT=1400/* Runde 2: vorbereitete Bilder aller Richtungen (Kämpfer ~108, Bewohner ~16 je Figur) */,lastDrawn=new Map(),budget={f:-1,n:0};let frameNo=0,warming=false;
 /** Neue Weltbilder je Bild (Handy-Messung 2026-09-27): ein Zusammensetzen kostet 4–16 ms (Mittelklasse-Handy ×4). Der Renderer setzt bei
  *  „Niedriger Auflösung“ 1 statt 2 – eine Figur hält dann höchstens ein Bild länger ihre letzte Haltung, das Bild ruckelt nicht. */
 export const paperdollBudget={perFrame:2};
 // Geschwisterbilder (übrige Lauf-/Atembilder derselben Richtung) im Leerlauf vorbereiten, damit das Budget im Bild selten greift.
 const warmQueue=[],warmKeys=new Set();let warmPending=false;
-function queueWarm(job){if(warmKeys.has(job.wkey)||worldCache.has(job.wkey)||warmQueue.length>64)return;warmKeys.add(job.wkey);warmQueue.push(job);
+function queueWarm(job){if(pdw.w)return;/* mit Worker bestellt warmFigure */if(warmKeys.has(job.wkey)||worldCache.has(job.wkey)||warmQueue.length>64)return;warmKeys.add(job.wkey);warmQueue.push(job);
  if(warmPending||typeof requestIdleCallback!=='function')return;warmPending=true;requestIdleCallback(runWarm);}
 function runWarm(deadline){warmPending=false;
  while(warmQueue.length&&deadline.timeRemaining()>10){const j=warmQueue.shift();warmKeys.delete(j.wkey);if(worldCache.has(j.wkey))continue;
@@ -223,6 +210,37 @@ function prewarm(idle){const ids=[...ACTORS.keys()],cv=document.createElement('c
  const step=deadline=>{c.setTransform(2*(globalThis.devicePixelRatio||1),0,0,2*(globalThis.devicePixelRatio||1),0,0);
   do{const n=i++;if(n>=ids.length*2)return;const id=ids[n>>1],dir=n&1?'sw':'se';warming=true;try{if(drawPaperdoll(c,id,0,0,{direction:dir,seed:0},1))paperdoll.stats.warmed++;}finally{warming=false;}}
   while(deadline?.timeRemaining?deadline.timeRemaining()>8:false);idle(step);};idle(step);}
+// ---------- Rechen-Worker (Handy-Leistung Runde 2, 27.09.2026) ----------
+// Neue Weltbilder entstehen im Worker (paperdoll-worker.js): Der Hauptfaden zeigt so lange das letzte Bild derselben Richtung (wie beim
+// Budget bisher) und bestellt nebenbei die Bilder, die als Nächstes gebraucht werden – übrige Bilder des laufenden Zyklus, Atmen und Laufen
+// in allen Richtungen, bei Kämpfern auch alle Aktionsbilder. Nur ganz ohne Vorbild (erster Anblick in dieser Richtung) setzt der
+// Hauptfaden selbst zusammen. Ohne Worker/OffscreenCanvas (ältere Browser) bleibt alles wie vorher.
+const pdw={w:null,failed:false,seq:1,jobs:new Map(),byKey:new Map(),tints:new Set(),bad:new Set(),warmed:new Set(),stats:{sent:0,done:0,missing:0,errors:0},last:null};
+function pdWorker(){if(pdw.w||pdw.failed)return pdw.w;
+ if(typeof Worker!=='function'||typeof OffscreenCanvas!=='function'||typeof document==='undefined'||!paperdoll.catalog||globalThis.__paperdollWorker===false){pdw.failed=true;return null;}
+ try{const w=new Worker(new URL('./paperdoll-worker.js',import.meta.url),{type:'module'});w.onmessage=onPdMessage;
+  w.onerror=()=>{pdw.failed=true;pdw.w=null;for(const j of pdw.jobs.values())pdw.bad.add(j.wkey);pdw.jobs.clear();pdw.byKey.clear();};
+  w.postMessage({type:'init',catalog:paperdoll.catalog,base:new URL(BASE,location.href).href});pdw.w=w;}catch{pdw.failed=true;}
+ return pdw.w;}
+function onPdMessage(e){const d=e.data;if(d.type==='stats'){pdw.last=d;return;}const j=pdw.jobs.get(d.id);if(!j)return;pdw.jobs.delete(d.id);pdw.byKey.delete(j.wkey);
+ if(d.data){const cv=document.createElement('canvas');cv.width=d.w;cv.height=d.h;cv.getContext('2d').putImageData(new ImageData(d.data,d.w,d.h),0,0);remember(worldCache,j.wkey,cv,WORLD_LIMIT);pdw.stats.done++;/* erstes fertiges Bild einer Richtung dient als Vorbild, bis das gewünschte kommt (statt im Hauptfaden zusammenzusetzen) */if(j.fig&&!lastDrawn.has(j.fig+'|'+j.dir))lastDrawn.set(j.fig+'|'+j.dir,cv);if(pdw.audit)pdw.audit.push({j,data:d.data,px:d.px});}
+ else{pdw.bad.add(j.wkey);if(d.missing)pdw.stats.missing++;else pdw.stats.errors++;}}
+/** Weltbild beim Worker bestellen (prio 0 = jetzt gebraucht); true = bestellt oder schon unterwegs. */
+function orderWorld(j,prio){if(pdw.bad.has(j.wkey))return false;const w=pdWorker();if(!w)return false;if(worldCache.has(j.wkey))return true;
+ const open=pdw.byKey.get(j.wkey);if(open!==undefined){const o=pdw.jobs.get(open);if(prio<o.prio){o.prio=prio;w.postMessage({type:'prio',id:open,prio});}return true;}
+ const id=pdw.seq++;j.prio=prio;pdw.jobs.set(id,j);pdw.byKey.set(j.wkey,id);
+ const msg={type:'job',id,prio,arch:j.arch,dir:j.dir,f:j.f,srcs:[...j.srcs],k:j.k,mKey:j.mKey,audit:!!pdw.audit};if(!pdw.tints.has(j.mKey)){msg.m=[...j.m];pdw.tints.add(j.mKey);}
+ w.postMessage(msg);pdw.stats.sent++;return true;}
+/** Was als Nächstes gebraucht wird, beim Worker vorbestellen: Zyklus der aktuellen Richtung (1), Atmen/Laufen aller Richtungen (2),
+ *  Aktionsbilder aller Richtungen bei Kämpfern (3). Je Figur und Stufe nur einmal. */
+function warmFigure(id,fig,arch,dir,f,srcs,k,m,tk){if(!pdw.w)return;const cat=paperdoll.catalog,split=cat.split??cat.frames.length,tail='|'+[...srcs].sort().join(','),ks=k.toFixed(2),mKey=arch+'|'+tk,base=fig+'|'+ks;
+ const order=(d,g,prio)=>{const key=arch+'|'+d+'|'+g+tail;orderWorld({wkey:key+'|'+ks+'|'+tk,arch,dir:d,f:g,srcs,key,k,m,mKey,fig},prio);};
+ const walk=cat.frames.findIndex(x=>x.anim==='laufen'),cycle=f>=split&&f<cat.frames.length?'akt':walk>=0&&f>=walk&&f<walk+8?'lauf':f<4?'atem':'';
+ const tag=base+'|'+dir+'|'+cycle;if(cycle&&!pdw.warmed.has(tag)){pdw.warmed.add(tag);const list=cycle==='akt'?Array.from({length:cat.frames.length-split},(_,i)=>split+i):cycle==='lauf'?Array.from({length:8},(_,i)=>walk+i):[0,1,2,3];for(const g of list)if(g!==f)order(dir,g,1);}
+ const fighter=!!ARCH[id]||cycle==='akt';
+ if(!pdw.warmed.has(base)){pdw.warmed.add(base);for(const d of DIRS){for(const g of [0,1,2,3])order(d,g,2);}}
+ if(fighter&&!pdw.warmed.has(base+'|kampf')){pdw.warmed.add(base+'|kampf');for(const d of DIRS){if(walk>=0)for(let i=0;i<8;i++)order(d,walk+i,2);for(let g=split;g<cat.frames.length;g++)order(d,g,3);}}
+ if(pdw.warmed.size>4000)pdw.warmed.clear();}
 export function drawPaperdoll(c,id,x,y,p={},magnify=1){
  if(!paperdoll.ready){if(!pending)loadPaperdoll();return false;}
  const actor=ACTORS.get(id),arch=ARCH[id]||actor?.arch;if(!arch||!paperdoll.catalog.archetypes[arch])return false;
@@ -247,10 +265,13 @@ export function drawPaperdoll(c,id,x,y,p={},magnify=1){
  const u=unitScale(arch)*magnify,dev=u*contextScale(c),k=Math.min(1,Math.round(dev*50)/50);let bmp;
  if(k<.82){const wkey=key+'|'+k.toFixed(2)+'|'+tk;bmp=worldCache.get(wkey);
   if(bmp){worldCache.delete(wkey);worldCache.set(wkey,bmp);}
-  else{const last=lastDrawn.get(lastKey);if(budget.f!==frameNo){budget.f=frameNo;budget.n=0;}// nur dieselbe Richtung – nie eine falsche Ansicht zeigen
-   if(!warming&&budget.n>=paperdollBudget.perFrame&&last){bmp=last;paperdoll.stats.deferred++;queueWarm({wkey,arch,dir,f,srcs,key,k,m});}else{budget.n++;bmp=remember(worldCache,wkey,shrunk(composed(arch,dir,f,srcs,key),k,m),WORLD_LIMIT);
+  else{const last=lastDrawn.get(lastKey),job={wkey,arch,dir,f,srcs,key,k,m,mKey:arch+'|'+tk,fig};if(budget.f!==frameNo){budget.f=frameNo;budget.n=0;}// nur dieselbe Richtung – nie eine falsche Ansicht zeigen
+   if(!warming&&last&&orderWorld(job,0)){bmp=last;paperdoll.stats.deferred++;}
+   else if(warming&&orderWorld(job,3))return true;/* Vorwärmen beim Laden: bestellen statt im Hauptfaden rechnen */
+   else if(!warming&&budget.n>=paperdollBudget.perFrame&&last){bmp=last;paperdoll.stats.deferred++;queueWarm({wkey,arch,dir,f,srcs,key,k,m});}else{budget.n++;bmp=remember(worldCache,wkey,shrunk(composed(arch,dir,f,srcs,key),k,m),WORLD_LIMIT);
     if(!warming&&typeof requestIdleCallback==='function'){const tail='|'+[...srcs].sort().join(',');for(const g of cycleOf(f))if(g!==f){const gk=arch+'|'+dir+'|'+g+tail;queueWarm({wkey:gk+'|'+k.toFixed(2)+'|'+tk,arch,dir,f:g,srcs,key:gk,k,m});}}}}}
  else bmp=full(composed(arch,dir,f,srcs,key),m,tk);
+ if(k<.82&&!warming)warmFigure(id,fig,arch,dir,f,srcs,k,m,tk);
  remember(lastDrawn,lastKey,bmp,600);lastDrawn.set(anyKey,bmp);return blit(c,x,y,p,magnify,arch,dir,dead,bmp);
 }
 function blit(c,x,y,p,magnify,arch,dir,dead,bmp){const cat=paperdoll.catalog,u=unitScale(arch)*magnify;

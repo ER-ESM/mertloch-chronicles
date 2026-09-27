@@ -59,8 +59,14 @@ export function mountAuraUI(root,getGame){
   for(const [key,bar] of Object.entries(bars)){
    const items=report[key],list=bar.querySelector('.aura-icons');bar.hidden=!items.length;
    const signature=g.member.id+':'+items.map(a=>a.id).join('|');
-   if(list.dataset.signature!==signature){list.dataset.signature=signature;list.replaceChildren();if(ownerGroup===key)hide();
-    for(const a of items){const button=document.createElement('button');button.type='button';button.dataset.aura=a.id;button.innerHTML='<canvas width="'+ICON_STEP.aura+'" height="'+ICON_STEP.aura+'" aria-hidden="true"></canvas><i class="aura-sweep" aria-hidden="true"></i><b class="aura-stacks"></b><span class="aura-time"></span>';if(a.itemIcon)paintItemTile(button.querySelector('canvas'),'aura:'+a.id,a.itemIcon);/* Held aktiv: Angefeuert mit Gegenstandsmotiv */else paintSkillIcon(button.querySelector('canvas'),a.icon,g.member.id,{aura:true});list.append(button);}
+   if(list.dataset.signature!==signature){list.dataset.signature=signature;if(ownerGroup===key)hide();
+    /* Handy-Leistung Runde 2: Knöpfe samt gemaltem Symbol je Aura wiederverwenden – im Kampf wechseln die Auren laufend, und jedes neue
+       Symbol hieß: neue Leinwand anlegen und malen (Spitzen im HUD-Takt). Gleicher Aufbau, gleiches Bild. */
+    const pool=list._pool||=new Map(),next=[];
+    for(const a of items){const pk=a.id+'|'+(a.itemIcon?'i:'+a.itemIcon:'s:'+a.icon)+'|'+g.member.id;let button=pool.get(pk);
+     if(!button){button=document.createElement('button');button.type='button';button.dataset.aura=a.id;button.innerHTML='<canvas width="'+ICON_STEP.aura+'" height="'+ICON_STEP.aura+'" aria-hidden="true"></canvas><i class="aura-sweep" aria-hidden="true"></i><b class="aura-stacks"></b><span class="aura-time"></span>';if(a.itemIcon)paintItemTile(button.querySelector('canvas'),'aura:'+a.id,a.itemIcon);/* Held aktiv: Angefeuert mit Gegenstandsmotiv */else paintSkillIcon(button.querySelector('canvas'),a.icon,g.member.id,{aura:true});pool.set(pk,button);if(pool.size>48)pool.delete(pool.keys().next().value);}
+     button.classList.remove('aura-expiring');next.push(button);}
+    list.replaceChildren(...next);
    }
    for(const [i,a] of items.entries()){
     const id=key+':'+a.id;alive.add(id);const duration=Math.max(peaks.get(id)||0,a.duration||0,a.remaining||0);peaks.set(id,duration);

@@ -1,4 +1,4 @@
-import {circleIntersectsBox} from './world-collision.js';
+import {inside,nearestOnSegment,segmentDistance,blockedIn,onRoadIn} from './world-geometry.js';
 import {spaceQuestGivers} from './world-presence.js';
 import {dressSites,placeQuestObjects} from './site-dressing.js';
 import {refineDressing,finalizeDressing} from './world-dressing.js';
@@ -10,9 +10,8 @@ import {dressStory} from './clan.js';
 export const SCALE=WORLD_RULES.pixelsPerMeter;
 export const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 export function rng(seed){return ()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};}
-export function inside(x,y,points){let c=false;for(let i=0,j=points.length-1;i<points.length;j=i++){const a=points[i],b=points[j];if((a.y>y)!==(b.y>y)&&x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)c=!c;}return c;}
-export function nearestOnSegment(x,y,a,b){const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((x-a.x)*dx+(y-a.y)*dy)/(dx*dx+dy*dy||1)));return{x:a.x+t*dx,y:a.y+t*dy};}
-export function segmentDistance(x,y,a,b){return distance({x,y},nearestOnSegment(x,y,a,b));}
+/* Geometrie liegt in world-geometry.js (auch für den Boden-Worker), hier weitergereicht */
+export {inside,nearestOnSegment,segmentDistance};
 function bounds(p){return {minX:Math.min(...p.map(a=>a.x)),maxX:Math.max(...p.map(a=>a.x)),minY:Math.min(...p.map(a=>a.y)),maxY:Math.max(...p.map(a=>a.y))};}
 function rectangle(x,y,w,h){return [{x:x-w/2,y:y-h/2},{x:x+w/2,y:y-h/2},{x:x+w/2,y:y+h/2},{x:x-w/2,y:y+h/2},{x:x-w/2,y:y-h/2}];}
 class Heap{constructor(){this.a=[];}push(v){const a=this.a;a.push(v);let i=a.length-1;while(i){const p=(i-1)>>1;if(a[p].f<=v.f)break;a[i]=a[p];i=p;}a[i]=v;}pop(){const a=this.a,first=a[0],v=a.pop();if(a.length){let i=0;while(i*2+1<a.length){let n=i*2+1;if(n+1<a.length&&a[n+1].f<a[n].f)n++;if(a[n].f>=v.f)break;a[i]=a[n];i=n;}a[i]=v;}return first;}get length(){return this.a.length;}}
@@ -72,12 +71,10 @@ export class World {
   unproject(x,y){return {lat:this.bbox.north-y/(111320*SCALE),lon:this.bbox.west+x/(111320*Math.cos(50.27*Math.PI/180)*SCALE)};}
   addGrid(o){for(let x=Math.floor(o.minX/100);x<=Math.floor(o.maxX/100);x++)for(let y=Math.floor(o.minY/100);y<=Math.floor(o.maxY/100);y++){const k=x+','+y;if(!this.grid.has(k))this.grid.set(k,[]);this.grid.get(k).push(o);}}
   nearby(x,y,r=8){const found=new Set();for(let gx=Math.floor((x-r)/100);gx<=Math.floor((x+r)/100);gx++)for(let gy=Math.floor((y-r)/100);gy<=Math.floor((y+r)/100);gy++)for(const b of this.grid.get(gx+','+gy)||[])found.add(b);return [...found];}
-  /** Handy-Messung 2026-09-27: direkt über die Rasterzellen statt über nearby() – ohne Set und Array je Aufruf (Sichtlinien prüfen alle 5 E,
-   *  also Dutzende Aufrufe je Figur und Bild). Ein Objekt in zwei Zellen wird höchstens doppelt geprüft; das Ergebnis ist dasselbe. */
-  blocked(x,y,r=6){if(x<20||y<20||x>this.width-20||y>this.height-20)return true;const x1=Math.floor((x+r)/100),y0=Math.floor((y-r)/100),y1=Math.floor((y+r)/100);
-   for(let gx=Math.floor((x-r)/100);gx<=x1;gx++)for(let gy=y0;gy<=y1;gy++){const list=this.grid.get(gx+','+gy);if(!list)continue;for(const b of list){if(b.radius){if(Math.hypot(x-b.x,y-b.y)<r+b.radius)return true;continue;}if(circleIntersectsBox(x,y,r,b))return true;}}return false;}
+  /** Kollision (world-geometry.js blockedIn): direkt über die Rasterzellen, ohne Zwischenobjekte (Handy-Messung 2026-09-27). */
+  blocked(x,y,r=6){return blockedIn(this,x,y,r);}
   indexRoads(){this.roadGrid.clear();this.segments=[];for(const road of this.roads)for(let i=1;i<road.points.length;i++){const a=road.points[i-1],b=road.points[i];if(distance(a,b)<.1)continue;const s={a,b,road,...bounds([a,b])};this.segments.push(s);const pad=road.width/2+50;for(let x=Math.floor((s.minX-pad)/200);x<=Math.floor((s.maxX+pad)/200);x++)for(let y=Math.floor((s.minY-pad)/200);y<=Math.floor((s.maxY+pad)/200);y++){const key=x+','+y;if(!this.roadGrid.has(key))this.roadGrid.set(key,[]);this.roadGrid.get(key).push(s);}}}
-  onRoad(x,y,pad=0){return (this.roadGrid.get(Math.floor(x/200)+','+Math.floor(y/200))||[]).some(s=>segmentDistance(x,y,s.a,s.b)<s.road.width/2+pad);}
+  onRoad(x,y,pad=0){return onRoadIn(this.roadGrid,x,y,pad);}
   closestRoad(x,y,named=false){let best=null,point={x,y},d=Infinity;const local=this.roadGrid.get(Math.floor(x/200)+','+Math.floor(y/200));const pool=named?(local?.some(s=>s.road.tags.name)?local:this.segments):local?.length?local:this.segments;for(const s of pool){if(named&&!s.road.tags.name)continue;const p=nearestOnSegment(x,y,s.a,s.b),n=distance({x,y},p);if(n<d){best=s.road;point=p;d=n;}}return {road:best,point,distance:d};}
   nearestRoad(x,y){return this.closestRoad(x,y,true);}
   findClear(x,y,r=7){if(!this.blocked(x,y,r))return{x,y};for(let d=10;d<500;d+=10)for(let a=0;a<Math.PI*2;a+=.3){const p={x:x+Math.cos(a)*d,y:y+Math.sin(a)*d};if(!this.blocked(p.x,p.y,r))return p;}throw new Error('Kein freier Platz in der Umgebung gefunden.');}
@@ -117,6 +114,10 @@ export class World {
   accessNode(p){const list=[],bx=Math.floor(p.x/60),by=Math.floor(p.y/60);for(let x=bx-5;x<=bx+5;x++)for(let y=by-5;y<=by+5;y++)for(const n of this.navSpatial.get(x+','+y)||[])if(this.connected.has(n.id))list.push(n);list.sort((a,b)=>distance(a,p)-distance(b,p));return list.find(n=>this.walkClear(p,n,9));}
   roadPath(start,end){const a=this.accessNode(start),b=this.accessNode(end);if(!a||!b)return [];const heap=new Heap(),cost=new Map([[a.id,0]]),prev=new Map();heap.push({id:a.id,f:0});while(heap.length){const n=heap.pop();if(n.id===b.id){const path=[end];let at=b.id;while(at!==a.id){path.unshift(this.nodes[at]);at=prev.get(at);if(at===undefined)return [];}path.unshift(a);return this.simplify(start,path);}for(const id of this.nodes[n.id].links){const next=(cost.get(n.id)||0)+distance(this.nodes[n.id],this.nodes[id]);if(next>=(cost.get(id)??Infinity))continue;cost.set(id,next);prev.set(id,n.id);heap.push({id,f:next+distance(this.nodes[id],b)});}}return [];}
   simplify(start,path){const out=[];let from=start;for(let i=0;i<path.length;i++)if(i===path.length-1||!this.walkClear(from,path[i+1],9)){out.push({x:path[i].x,y:path[i].y});from=path[i];}return out;}
+  /** Wegsuche mit Budget je Bild (Handy-Leistung Runde 2): eine Suche kostet auf dem Handy 5–10 ms; laufen im selben Bild mehrere an
+   *  (Söldner, Bewohner, Verfolger), rückt jede weitere ins nächste Bild – Rückgabe null, der Aufrufer behält seinen Weg. Ohne Bildtakt
+   *  (Tests, Werkzeuge: frameId nie gesetzt) sofort wie findPath. */
+  findPathSoon(start,end){if(this.frameId===undefined)return this.findPath(start,end);if(this.pathFrame===this.frameId&&this.pathsThisFrame>=1)return null;if(this.pathFrame!==this.frameId){this.pathFrame=this.frameId;this.pathsThisFrame=0;}this.pathsThisFrame++;return this.findPath(start,end);}
   findPath(start,end,maxNodes=this.rules.navigation.maxLocalNodes){if(this.blocked(start.x,start.y,9)&&!this.blocked(start.x,start.y,4)){const safe=this.findClear(start.x,start.y,10);if(distance(start,safe)<35&&this.walkClear(start,safe,4)){const rest=this.findPath(safe,end,maxNodes);return rest.length?[safe,...rest]:[];}}const goal=this.findClear(end.x,end.y,9);if(this.walkClear(start,goal,9))return [goal];const viaRoad=this.roadPath(start,goal);if(viaRoad.length)return viaRoad;
     const step=12,heap=new Heap(),best=new Map(),key=(x,y)=>x+','+y;heap.push({x:0,y:0,g:0,f:distance(start,goal),parent:null});best.set('0,0',0);let count=0;
     while(heap.length&&count++<maxNodes){let current=heap.pop();if(current.g>best.get(key(current.x,current.y)))continue;const p={x:start.x+current.x*step,y:start.y+current.y*step};if(distance(p,goal)<step*1.5&&this.walkClear(p,goal,9)){const path=[goal];while(current.parent){path.unshift({x:start.x+current.x*step,y:start.y+current.y*step});current=current.parent;}return this.simplify(start,path);}

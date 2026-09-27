@@ -169,9 +169,13 @@ if(isMain){
   for(let r=0;r<REPEAT;r++)for(const v of (r%2?[...variants].reverse():variants)){
    const b=await start({url:v.url});
    try{const info=await setup(b);report.setup[v.tag]||={url:b.url,...info};console.log('Aufstellung',v.tag,'#'+(r+1),JSON.stringify(info));
-    for(const rate of RATES)for(const name of SCENES){const m=await measure(b,rate,name),k=v.tag+'|'+rate+'|'+name;if(!got.has(k))got.set(k,[]);got.get(k).push(m);
+    for(const rate of RATES)for(const name of SCENES){let m=await measure(b,rate,name);const k=v.tag+'|'+rate+'|'+name;
+     /* Runde 2: Kampf ohne Schaden im Messfenster (der Kampf kam nicht zustande, gemessen wurde Stillstand) zählt nicht – bis zu zweimal wiederholen */
+     for(let t=0;t<2&&name==='combat'&&!(m.after?.damage>(m.before?.damage||0));t++){console.log(`   ${rate}× ${name} ${AB?v.tag+' ':''}#${r+1}: kein Schaden im Messfenster – wiederholt`);m=await measure(b,rate,name);}
+     if(name==='combat'&&!(m.after?.damage>(m.before?.damage||0))){console.log('   Kampf kam nicht zustande – Lauf nicht gewertet');continue;}if(!got.has(k))got.set(k,[]);got.get(k).push(m);
      console.log(line(`${rate}× ${name} ${AB?v.tag+' ':''}#${r+1}`,m.trace));
      if(m.trace.segments)console.log('   Abschnitte (Mittel/p95 ms)',Object.entries(m.trace.segments.ms).map(([k,x])=>k+' '+x.mean+'/'+x.p95).join(' · '));
+     if(m.trace.segments?.worst&&arg('worst',false))console.log('   langsamste Bilder',JSON.stringify(m.trace.segments.worst));
      console.log('   Ereignisse',JSON.stringify(m.trace.topEvents?.slice(0,8).map(e=>e.name+' '+e.msPerFrame)),'Stil/Bild',m.trace.styleRecalcsPerFrame,'Elemente',m.trace.styleElementsPerFrame,'erzwungen',m.trace.forcedPerFrame,'Fäden',JSON.stringify(m.trace.threads?.slice(0,4)));
      if(r===REPEAT-1&&arg('shots',false)){mkdirSync(dirname(OUT),{recursive:true});await b.screenshot(OUT.replace(/\.json$/,'')+'-'+(AB?v.tag+'-':'')+rate+'x-'+name+'.jpg');}
      if(r===REPEAT-1&&PROFILE){await prepare(b,name);await b.send('Emulation.setCPUThrottlingRate',{rate});await wait(2500);m.prof=await profileScene(b,name,Math.min(SECONDS,12)*1000);await b.send('Emulation.setCPUThrottlingRate',{rate:1});
@@ -179,7 +183,7 @@ if(isMain){
     if(b.errors.length)console.log('Seitenfehler',v.tag,JSON.stringify(b.errors.slice(0,3)));
    }finally{try{b.close();}catch{}closeChromes();}
   }
-  for(const v of variants)for(const rate of RATES)for(const name of SCENES){const runs=got.get(v.tag+'|'+rate+'|'+name)||[],merged=mergeRuns(runs.map(m=>m.trace));
+  for(const v of variants)for(const rate of RATES)for(const name of SCENES){const runs=got.get(v.tag+'|'+rate+'|'+name)||[];if(!runs.length)continue;const merged=mergeRuns(runs.map(m=>m.trace));
    const prof=runs.find(m=>m.prof)?.prof||null;for(const m of runs){delete m.trace.raw;delete m.prof;}
    report.runs.push({rate,scene:name,session:v.tag,url:report.setup[v.tag]?.url,merged,runs,prof});
    console.log(line(`== ${rate}× ${name} ${v.tag} (${runs.length} Läufe)`,merged));}

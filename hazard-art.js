@@ -7,12 +7,15 @@ import {mapIcon} from './map-symbols.js';
 
 const TAU=Math.PI*2,TICK=12*Math.PI/180;
 const blink=(progress,time)=>progress>.75&&Math.sin(time*TAU*8)>0;
+/** Randmarke 3 × 2 bei Abstand r in Richtung t als Viereck im Pfad (Handy-Leistung Runde 2): vorher je Marke save/rotate/fillRect/restore –
+ *  30 Marken je Warnfläche = 120 Zeichenbefehle je Bild, jetzt alle Marken in einem fill(). Gleiche Ecken wie fillRect(r,-1,3,2) unter rotate(t). */
+function tickQuad(c,x,y,t,r){const co=Math.cos(t),si=Math.sin(t),r3=r+3;c.moveTo(x+r*co+si,y+r*si-co);c.lineTo(x+r3*co+si,y+r3*si-co);c.lineTo(x+r3*co-si,y+r3*si+co);c.lineTo(x+r*co-si,y+r*si+co);c.closePath();}
 /** Bodenkreis (Engine-Flächen): gequetscht auf 0,75 wie die Trefferprüfung. a: {x,y,radius,bar?}. */
 export function drawGroundHazard(c,a,progress,time){
  c.save();c.translate(a.x,a.y);c.scale(1,.75);
  const gr=c.createRadialGradient(0,0,0,0,0,a.radius);gr.addColorStop(0,'#c4302612');gr.addColorStop(.7,'#c4302633');gr.addColorStop(1,'#d8402c66');c.fillStyle=gr;c.beginPath();c.arc(0,0,a.radius,0,TAU);c.fill();
  const r2=Math.max(1,a.radius*progress),g2=c.createRadialGradient(0,0,0,0,0,r2);g2.addColorStop(0,'#e2432f30');g2.addColorStop(.8,'#e2432f66');g2.addColorStop(1,'#ff6a4a99');c.fillStyle=g2;c.beginPath();c.arc(0,0,r2,0,TAU);c.fill();
- c.fillStyle='#ffc0a0';const n=Math.round(TAU/TICK);for(let i=0;i<n;i++){c.save();c.rotate(i*TICK+time*.6);c.fillRect(a.radius-5,-1,3,2);c.restore();}
+ c.fillStyle='#ffc0a0';const n=Math.round(TAU/TICK);c.beginPath();for(let i=0;i<n;i++)tickQuad(c,0,0,i*TICK+time*.6,a.radius-5);c.fill();
  c.restore();
  c.strokeStyle='#ffb08a';c.lineWidth=1;c.beginPath();c.ellipse(a.x,a.y,a.radius*progress,a.radius*.75*progress,0,0,TAU);c.stroke();
  c.strokeStyle=blink(progress,time)?'#fff0c8':'#ff5a3c';c.lineWidth=2;c.beginPath();c.ellipse(a.x,a.y,a.radius,a.radius*.75,0,0,TAU);c.stroke();
@@ -27,7 +30,7 @@ export function drawConeHazard(c,e,k,progress,time,{reach=null,rays=0}={}){
  const gr=c.createRadialGradient(e.x,e.y,0,e.x,e.y,R);gr.addColorStop(0,'#c4302612');gr.addColorStop(.7,'#c4302633');gr.addColorStop(1,'#d8402c66');c.fillStyle=gr;sector(R);c.fill();
  const r2=Math.max(1,R*progress),g2=c.createRadialGradient(e.x,e.y,0,e.x,e.y,r2);g2.addColorStop(0,'#e2432f30');g2.addColorStop(.8,'#e2432f66');g2.addColorStop(1,'#ff6a4a99');c.fillStyle=g2;sector(r2);c.fill();
  // Randmarken am Bogen alle 12°, dazu an beiden Kanten
- c.fillStyle='#ffc0a0';for(let t=a-half;t<=a+half+1e-6;t+=TICK){const d=at(t);if(d<R-1)continue;c.save();c.translate(e.x,e.y);c.rotate(t);c.fillRect(d-5,-1,3,2);c.restore();}
+ c.fillStyle='#ffc0a0';c.beginPath();for(let t=a-half;t<=a+half+1e-6;t+=TICK){const d=at(t);if(d<R-1)continue;tickQuad(c,e.x,e.y,t,d-5);}c.fill();
  for(const s of [-1,1]){const t=a+s*half,L=at(t);for(let d=R*.25;d<L;d+=R*.25){c.fillRect(e.x+Math.cos(t)*d-1,e.y+Math.sin(t)*d-1,2,2);}}
  // wachsende Innenkante
  c.strokeStyle='#ffb08a';c.lineWidth=1;sector(r2);c.stroke();

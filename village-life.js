@@ -11,7 +11,7 @@ export class VillageLife{
   tick(dt,player){this.time+=dt;for(const a of this.actors){a.bubble=Math.max(0,a.bubble-dt);a.cooldown-=dt;a.moving=false;
     if(distance(a,player)<26){a.facing=player.x>a.x?1:-1;if(a.kind==='villager'&&a.cooldown<0){a.bubble=3;a.cooldown=25+this.random()*20;}continue;}
     if(a.wait>0){a.wait-=dt;continue;}
-    let target=a.path[0];if(!target){a.wait=1.5+this.random()*4;const end=distance(a,a.home)>25?a.home:a.route.at(-1);a.path=this.world.findPath(a,end);if(!a.path.length)a.path=[a.home];continue;}
+    let target=a.path[0];if(!target){a.wait=1.5+this.random()*4;const end=distance(a,a.home)>25?a.home:a.route.at(-1),path=this.world.findPathSoon?this.world.findPathSoon(a,end):this.world.findPath(a,end);if(path===null)continue;/* Budget je Bild: nach der Wartezeit erneut */a.path=path;if(!a.path.length)a.path=[a.home];continue;}
     const d=distance(a,target);if(d<2){a.path.shift();continue;}const step=Math.min(d,a.speed*dt),x=a.x+(target.x-a.x)/d*step,y=a.y+(target.y-a.y)/d*step;if(!this.world.blocked(x,y,4)){a.direction=walkFacing(x-a.x,y-a.y,a.direction||'se');a.walkDistance=(a.walkDistance||0)+Math.hypot(x-a.x,y-a.y);a.x=x;a.y=y;a.facing=target.x>a.x?1:-1;a.moving=true;}else{a.path=[];a.wait=2;}
   }for(const a of this.actors){a.gaitWeight=(a.gaitWeight||0)+((a.moving?1:0)-(a.gaitWeight||0))*(1-Math.exp(-16*dt));if(a.gaitWeight<.001)a.gaitWeight=0;}}
 }

@@ -110,7 +110,7 @@ export function tickEnemyOnCompanion(g,e,c,dt){
  if(d>reach||lostSight(g,e,c)/* Dungeon Etappe 4 Teil A: um Deckung herum */){
   const speed=e.speed*(e.mark>0?e.slow:1)*(e.controlSlow>0?.5:1);e.pathTimer=(e.pathTimer||0)-dt;
   if(walkClear(g.world,e,c,7)){const step=Math.min(speed*dt,d-reach+1);g.move(e,(c.x-e.x)/d*step,(c.y-e.y)/d*step);e.moving=true;e.chasePath=[];}
-  else{if(e.pathTimer<=0){e.pathTimer=1.1;e.chasePath=g.world.findPath(e,c);}moveAlong(g,e,e.chasePath,speed,dt);}
+  else{if(e.pathTimer<=0){const np=g.world.findPathSoon?g.world.findPathSoon(e,c):g.world.findPath(e,c);if(np){e.pathTimer=1.1;e.chasePath=np;}/* null: Budget je Bild, nächstes Bild */}moveAlong(g,e,e.chasePath,speed,dt);}
  }
  e.autoTimer=Math.max(0,(e.autoTimer||0)-dt);
  const a=e.autoAttack;
@@ -132,7 +132,7 @@ function place(g,c,at){let p=at;try{p=g.world.findClear(at.x,at.y,9);}catch{}c.x
 function walkTo(g,c,goal,speed,dt,stopAt=6){
  speed*=(1+classBuffValue(c,'speed'))*(c.slowed>0?1-c.slowed:1)/* Dungeon Etappe 4 Teil A: nasser Boden */;const d=distance(c,goal);if(d<=stopAt){c.moving=false;return true;}
  if(walkClear(g.world,c,goal,8)){const step=Math.min(speed*dt,d-stopAt+1);g.move(c,(goal.x-c.x)/d*step,(goal.y-c.y)/d*step);c.path=[];}
- else{c.pathTimer=(c.pathTimer||0)-dt;if(c.pathTimer<=0||!c.path?.length){c.pathTimer=.9;try{c.path=g.world.findPath(c,goal);}catch{c.path=[];}}moveAlong(g,c,c.path,speed,dt);}
+ else{c.pathTimer=(c.pathTimer||0)-dt;if(c.pathTimer<=0||!c.path?.length){let np;try{np=g.world.findPathSoon?g.world.findPathSoon(c,goal):g.world.findPath(c,goal);}catch{np=[];}if(np){c.pathTimer=.9;c.path=np;}/* null: Budget je Bild – alter Weg bleibt, nächstes Bild erneut */}moveAlong(g,c,c.path,speed,dt);}
  c.moving=true;if(Math.abs(goal.x-c.x)>2)c.facing=goal.x<c.x?-1:1;return false;
 }
 

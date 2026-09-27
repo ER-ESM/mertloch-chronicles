@@ -2,6 +2,7 @@ import {placementReason} from './world-dressing.js';
 import {WORLD_SCALE} from './world-scale.js';
 import {box as r,shape,oval,line,framed,PALETTE as P} from './pixel-style.js';
 import {drawMaifeld,maifeld,fillMaifeldGround} from './maifeld-art.js';
+export {groundDetails} from './terrain.js';
 function crate(c,x,y){framed(c,'#a07858',x,y,15,13,P.ink,.8);for(let i=0;i<3;i++)r(c,'#d2a26c',x+2+i*4,y+1,2,10);line(c,'#e8c18c',[[x+1,y+11],[x+13,y+2]],1);}
 function barrel(c,x,y){oval(c,P.ink,x,y,8,4);framed(c,'#9a7362',x-8,y-12,16,13,P.ink,.7);oval(c,'#d3aa7c',x,y-12,8,3);for(const dy of [-8,-2])r(c,'#685b69',x-8,y+dy,16,2);r(c,'#ebc99a',x-5,y-10,1,8);}
 function lantern(c,x,y,t){line(c,'#594d35',[[x,y],[x,y-32],[x+9,y-32]],2);if(drawMaifeld(c,'lantern',x+9,y-18,WORLD_SCALE.lantern))return;framed(c,'#dac293',x+4,y-25,8,12,P.ink,.8);r(c,'#ffe6a1',x+6,y-23,4,8);}
@@ -28,8 +29,7 @@ export function drawOccupiedCamp(c,camp,time,clear){if(drawSiteProps(c,camp,time
  else{framed(c,'#756881',x+40,y-103,24,37,P.ink,1);for(const dy of [-94,-77]){oval(c,P.ink,x+52,y+dy,7,7);oval(c,'#b495b5',x+52,y+dy,4,4);}r(c,'#e6b986',x+44,y-101,16,2);}
  for(let i=0;i<9;i++){const dx=Math.sin(i*3.1)*105,dy=Math.cos(i*2.3)*72;if(Math.hypot(dx,dy)<65)continue;r(c,i%2?'#e0d2b0':'#8fa383',x+dx,y+dy,3,2);r(c,'#756774',x+dx,y+dy+2,3,.5);}
  c.restore();}
-export function groundDetails(c,w,ox,oy,S){
- for(const camp of w.camps){if(camp.x<ox-160||camp.x>ox+S+160||camp.y<oy-140||camp.y>oy+S+140)continue;for(let i=0;i<55;i++){const a=i*2.399,radius=19+Math.sqrt(i/55)*103,x=camp.x+Math.cos(a)*radius,y=camp.y+Math.sin(a)*radius*.7;c.save();c.beginPath();c.ellipse(x,y,9+i%8,5+i%5,0,0,Math.PI*2);c.clip();fillMaifeldGround(c,'groundDirt',x-18,y-12,36,24,.18);c.restore();}}}
+// groundDetails liegt in terrain.js (Boden-Worker, Runde 2) und wird hier weitergereicht.
 
 export function estateFootprint(p){
  const width=p.kind===2?30:p.kind===1?32:40,depth=p.kind===2?6:12;

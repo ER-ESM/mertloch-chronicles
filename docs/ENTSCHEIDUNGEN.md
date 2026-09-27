@@ -1444,3 +1444,45 @@ Nächste Schritte in dieser Reihenfolge: Anziehpuppe im Worker (braucht die Bög
 - `mobile-check` meldet auf origin/main wie hier nur „Unterbrechung (M-15)“.
 
 Tests: `tests/perf-handy.test.mjs` prüft Messauswertung, Schreiben nur bei Änderung, Layout-Phase und Zwischenbild. Außerdem prüft sie, dass Kontur, dringendes Bodenstück und Kollision dasselbe ergeben wie die früheren Fassungen.
+
+**Nachtrag 27.09.2026 · Runde 2: Rechen-Worker, genaues Einrasten, M-15.** Bericht: `docs/perf-handy-2026-09-27/runde2.md`.
+
+**Entschieden.**
+1. **Drei Rechen-Worker nehmen dem Hauptfaden die Bildspitzen ab.** Anziehpuppe (`paperdoll-worker.js`), Bodenstücke (`terrain-worker.js`) und Sprites (`sprite-worker.js`) rechnen mit demselben Code wie der Hauptfaden.
+   - Die Anziehpuppe bestellt vor, was als Nächstes gebraucht wird, und zeigt bis dahin das letzte Bild derselben Richtung.
+   - Der Boden bestellt nur bis 400 E vor dem Sichtrand und höchstens drei Stücke gleichzeitig. Weiter voraus sättigte das Hochladen die Grafik.
+   - Sprites werden am Sichtrand vorbestellt (`Renderer.prefetchSprites`), aber nur aus Leinwand-Bögen. Aus Bilddateien verkleinert Chrome im Hauptfaden auf einem anderen Weg, das wäre nicht bitgleich.
+   - Ohne Worker/OffscreenCanvas läuft alles wie vorher im Hauptfaden. `?noworker=all` bzw. `?noworker=paperdoll,terrain,sprite` schaltet sie zur Diagnose ab.
+2. **Bitgleich statt „optisch gleich“.** Das Einrasten der Anziehpuppe sucht jetzt die exakt nächste Palettenfarbe. Der alte Zwischenspeicher hing von der Reihenfolge ab, Worker und Hauptfaden wichen dadurch in etwa 1 % der Pixel voneinander ab.
+   - Nachgewiesen im Browser: 111 Figurenbilder, 12 Bodenstücke und 70 Sprites, Byte für Byte gleich.
+   - Neue Worker-Wege brauchen denselben Nachweis (`paperdoll.debug.compareWorker`, Vergleich über `getImageData`).
+3. **Wegsuche höchstens einmal je Bild** (`World.findPathSoon`). Dorfleben und Söldner behalten sonst ihren Weg ein Bild länger.
+4. **Kleinere Posten:** Auren-Knöpfe kommen aus einem Vorrat. Die Warnflächen-Marken bilden einen einzigen Pfad.
+5. **M-15 war eine veraltete Prüfung, kein Spielfehler.**
+   - f1077898 (24.09.) hält die Kurzmeldungen an, solange eine große Einblendung steht oder wartet.
+   - b2694201 (26.09.) wartete in der Prüfung nur auf die sichtbare Einblendung.
+   - Jetzt wartet `mobile-check` auch auf die eingereihte und erkennt eine *neue* Meldung. Die Prüfung ist vollständig grün.
+
+**Ergebnis (4×, Runde 1 → Runde 2, p50/p95).**
+- Stillstand: 28/55 → 31/45 ms
+- Laufen: 57/116 → 50/84 ms
+- Kampf: 59/111 → 32/65 ms
+
+Bei 6× wird der Stillstand besser (53/89 → 34/63 ms). Laufen und Kampf bleiben im Rahmen der Streuung gleich. Eine Gegenprobe mit und ohne Worker zeigt, dass die Worker den Kampf nicht verschlechtern.
+
+**Weiter nicht erreicht: p95 ≤ 16,7 ms.** Übrig ist Grundlast in jedem Bild:
+- Welt zeichnen, an der Bude ~1.340 Befehle je Bild: `save`/`restore` je Objekt, Lichterketten, Kit-Möbel.
+- Commit an den GPU-Prozess.
+- Logik 3–6 ms, HUD 2–4 ms.
+
+Nächste Runde wären Welt-Ebenen: Möbel und Lager an der Bude als Zwischenbild, `save`/`restore` nur, wo ein Zeichenweg Zustand hinterlässt.
+
+**Verworfen.**
+- *`combatStats` je Bild zwischenspeichern*: Gemessen waren es 0,3 ms. Ein Zwischenspeicher müsste jede Änderung an Ausrüstung, Talenten und Auren mitbekommen.
+- *Sprite-Bitmaps im Hauptfaden in Leinwände umkopieren*: Das ergab keinen messbaren Unterschied im Commit.
+- *Lichterketten stapeln oder zwischenspeichern*: Jede Birne funkelt mit eigener Deckkraft, das Bild würde sich ändern.
+
+**Messfallen.**
+- Kampfläufe ohne Schaden haben Stillstand gemessen; `perf-handy.mjs` wiederholt sie jetzt.
+- Dieselbe Fassung misst auf dem geteilten Rechner 43 bis 113 ms p50.
+- Innerhalb einer Sitzung maßen spätere Szenen langsamer als frühere: 6× Kampf zuerst 43 ms, 4× Kampf danach 53 ms p50. Vermutlich bleibt aus früheren Kämpfen etwas liegen (Leichen, Beute); geprüft ist das nicht. `--ab` behandelt beide Fassungen gleich, Einzelwerte über Szenen hinweg sind aber nicht vergleichbar.

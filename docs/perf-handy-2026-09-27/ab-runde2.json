@@ -1,0 +1,9799 @@
+{
+ "label": "",
+ "date": "2026-09-27T13:59:06.555Z",
+ "device": {
+  "width": 915,
+  "height": 412,
+  "deviceScaleFactor": 2.625,
+  "mobile": true,
+  "screenOrientation": {
+   "type": "landscapePrimary",
+   "angle": 90
+  },
+  "ua": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36"
+ },
+ "gpuArgs": [
+  "--use-angle=swiftshader",
+  "--enable-unsafe-swiftshader",
+  "--ignore-gpu-blocklist",
+  "--enable-gpu-rasterization",
+  "--enable-accelerated-2d-canvas",
+  "--enable-gpu"
+ ],
+ "seconds": 20,
+ "repeat": 2,
+ "runs": [
+  {
+   "rate": 4,
+   "scene": "idle",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 1283,
+    "seconds": 40,
+    "fps": 32,
+    "mainPerFrame": {
+     "n": 1283,
+     "mean": 30.93,
+     "p50": 30.76,
+     "p95": 44.68,
+     "p99": 53.67,
+     "max": 100.57,
+     "over16": 1198,
+     "over33": 403,
+     "over50": 21
+    },
+    "interval": {
+     "n": 1283,
+     "mean": 31.16,
+     "p50": 30.85,
+     "p95": 45.23,
+     "p99": 56.46,
+     "max": 101.18,
+     "over16": 1203,
+     "over33": 409,
+     "over50": 23
+    },
+    "kindsMean": {
+     "script": 21.35,
+     "style": 0.28,
+     "layout": 0.33,
+     "paint": 7.29,
+     "gc": 0.22,
+     "idle": 0,
+     "input": 0.02,
+     "other": 1.45
+    },
+    "kindsP95": {
+     "script": 31.25,
+     "style": 1.35,
+     "layout": 1.2,
+     "paint": 13.95,
+     "gc": 0,
+     "idle": 0,
+     "input": 0,
+     "other": 6.1
+    },
+    "longTasks": {
+     "count": 9,
+     "max": 99.8
+    },
+    "gc": {
+     "count": 253,
+     "totalMs": 424.7,
+     "maxMs": 61.3,
+     "perSecond": 6.3
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 2,
+       "strips": 0,
+       "hits": 243
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 0,
+       "hits": 1102
+      }
+     },
+     "trace": {
+      "frames": 628,
+      "seconds": 20,
+      "fps": 31.4,
+      "mainPerFrame": {
+       "n": 628,
+       "mean": 31.54,
+       "p50": 31.4,
+       "p95": 46.16,
+       "p99": 59.54,
+       "max": 100.57,
+       "over16": 589,
+       "over33": 214,
+       "over50": 14
+      },
+      "rafTask": {
+       "n": 628,
+       "mean": 30.29,
+       "p50": 30.6,
+       "p95": 43.84,
+       "p99": 50.24,
+       "max": 99.79,
+       "over16": 584,
+       "over33": 181,
+       "over50": 7
+      },
+      "interval": {
+       "n": 628,
+       "mean": 31.82,
+       "p50": 31.51,
+       "p95": 46.32,
+       "p99": 61.79,
+       "max": 101.18,
+       "over16": 592,
+       "over33": 219,
+       "over50": 16
+      },
+      "kindsMean": {
+       "script": 21.51,
+       "style": 0.3,
+       "layout": 0.39,
+       "paint": 7.67,
+       "gc": 0.23,
+       "idle": 0,
+       "input": 0.02,
+       "other": 1.41
+      },
+      "kindsP95": {
+       "script": 31.71,
+       "style": 1.42,
+       "layout": 1.2,
+       "paint": 14.6,
+       "gc": 0,
+       "idle": 0,
+       "input": 0,
+       "other": 6.06
+      },
+      "styleRecalcsPerFrame": 0.34,
+      "styleElementsPerFrame": 1.5,
+      "layoutsPerFrame": 0.31,
+      "forcedPerFrame": 0.13,
+      "longTasks": {
+       "count": 7,
+       "max": 99.8
+      },
+      "gc": {
+       "count": 175,
+       "totalMs": 233.1,
+       "maxMs": 61.3,
+       "perSecond": 8.7
+      },
+      "worstFrames": [
+       {
+        "ms": 100.6,
+        "kinds": {
+         "script": 30,
+         "paint": 5.8,
+         "gc": 63.5,
+         "other": 1.2
+        }
+       },
+       {
+        "ms": 74.3,
+        "kinds": {
+         "script": 33.3,
+         "style": 1.6,
+         "layout": 28.4,
+         "paint": 8.7,
+         "other": 2.3
+        }
+       },
+       {
+        "ms": 70.9,
+        "kinds": {
+         "script": 25.4,
+         "paint": 6.3,
+         "other": 39.2
+        }
+       },
+       {
+        "ms": 65.2,
+        "kinds": {
+         "script": 21.4,
+         "style": 2.1,
+         "layout": 1.9,
+         "paint": 7.1,
+         "gc": 30.8,
+         "other": 1.9
+        }
+       },
+       {
+        "ms": 63.7,
+        "kinds": {
+         "script": 18.9,
+         "style": 1.8,
+         "layout": 16.8,
+         "paint": 15.8,
+         "other": 10.4
+        }
+       },
+       {
+        "ms": 61.6,
+        "kinds": {
+         "script": 39.5,
+         "style": 1.8,
+         "layout": 1.4,
+         "paint": 17.9,
+         "other": 1.1
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 21.03
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 5.56
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.21
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.64
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.44
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.39
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.3
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.28
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.23
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.21
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.19
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.16
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.14
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.12
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.1
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 65.2
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.2
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.9
+       }
+      ],
+      "segments": {
+       "frames": 858,
+       "ms": {
+        "layout": {
+         "mean": 0.55,
+         "p95": 2.3,
+         "max": 17.2,
+         "n": 858
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 4.3,
+         "n": 858
+        },
+        "logik": {
+         "mean": 3.74,
+         "p95": 12.7,
+         "max": 33.7,
+         "n": 858
+        },
+        "ereignisse": {
+         "mean": 0.04,
+         "p95": 0.1,
+         "max": 10.3,
+         "n": 858
+        },
+        "weltbild": {
+         "mean": 14.08,
+         "p95": 22.6,
+         "max": 84.4,
+         "n": 858
+        },
+        "schadenszahlen": {
+         "mean": 0.1,
+         "p95": 0.2,
+         "max": 6.5,
+         "n": 858
+        },
+        "hud": {
+         "mean": 1.71,
+         "p95": 7.6,
+         "max": 19.9,
+         "n": 858
+        },
+        "ressourcenleiste": {
+         "mean": 0.06,
+         "p95": 0.3,
+         "max": 2.6,
+         "n": 858
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.3,
+         "n": 858
+        },
+        "rest": {
+         "mean": 0.2,
+         "p95": 1.2,
+         "max": 8,
+         "n": 858
+        }
+       },
+       "worst": [
+        {
+         "ms": 92.5,
+         "logik": 7.6,
+         "weltbild": 84.4
+        },
+        {
+         "ms": 52.1,
+         "layout": 1.3,
+         "logik": 33.7,
+         "weltbild": 9.3,
+         "hud": 7.1
+        },
+        {
+         "ms": 39.8,
+         "logik": 10.3,
+         "weltbild": 28.8
+        },
+        {
+         "ms": 39.8,
+         "logik": 1.3,
+         "weltbild": 38.2
+        },
+        {
+         "ms": 38.8,
+         "logik": 16.4,
+         "weltbild": 16.3,
+         "hud": 5.8
+        },
+        {
+         "ms": 38.3,
+         "logik": 5.7,
+         "weltbild": 32.2
+        },
+        {
+         "ms": 38.2,
+         "logik": 6.7,
+         "weltbild": 22.1,
+         "hud": 7.8
+        },
+        {
+         "ms": 38.1,
+         "logik": 16,
+         "weltbild": 13.5,
+         "hud": 6.5,
+         "rest": 1.5
+        }
+       ]
+      },
+      "extra": {}
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 2,
+       "strips": 1,
+       "hits": 291
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 1167
+      }
+     },
+     "trace": {
+      "frames": 655,
+      "seconds": 20,
+      "fps": 32.7,
+      "mainPerFrame": {
+       "n": 655,
+       "mean": 30.34,
+       "p50": 30.43,
+       "p95": 43.46,
+       "p99": 50.19,
+       "max": 73.27,
+       "over16": 609,
+       "over33": 190,
+       "over50": 7
+      },
+      "rafTask": {
+       "n": 655,
+       "mean": 29.11,
+       "p50": 29.7,
+       "p95": 41.52,
+       "p99": 45.7,
+       "max": 72.46,
+       "over16": 602,
+       "over33": 166,
+       "over50": 2
+      },
+      "interval": {
+       "n": 655,
+       "mean": 30.53,
+       "p50": 30.55,
+       "p95": 43.48,
+       "p99": 50.37,
+       "max": 73.47,
+       "over16": 611,
+       "over33": 191,
+       "over50": 7
+      },
+      "kindsMean": {
+       "script": 21.2,
+       "style": 0.25,
+       "layout": 0.26,
+       "paint": 6.92,
+       "gc": 0.21,
+       "idle": 0,
+       "input": 0.02,
+       "other": 1.48
+      },
+      "kindsP95": {
+       "script": 30.83,
+       "style": 1.21,
+       "layout": 1.19,
+       "paint": 12.68,
+       "gc": 0,
+       "idle": 0,
+       "input": 0,
+       "other": 6.27
+      },
+      "styleRecalcsPerFrame": 0.26,
+      "styleElementsPerFrame": 1.3,
+      "layoutsPerFrame": 0.26,
+      "forcedPerFrame": 0.01,
+      "longTasks": {
+       "count": 2,
+       "max": 72.5
+      },
+      "gc": {
+       "count": 78,
+       "totalMs": 191.7,
+       "maxMs": 40.8,
+       "perSecond": 3.9
+      },
+      "worstFrames": [
+       {
+        "ms": 73.3,
+        "kinds": {
+         "script": 23,
+         "style": 1.2,
+         "layout": 0.8,
+         "paint": 5.7,
+         "gc": 41.4,
+         "other": 1.2
+        }
+       },
+       {
+        "ms": 61.4,
+        "kinds": {
+         "script": 29.8,
+         "style": 0.8,
+         "layout": 2.2,
+         "paint": 4.8,
+         "other": 23.8
+        }
+       },
+       {
+        "ms": 54.1,
+        "kinds": {
+         "script": 31.1,
+         "style": 1,
+         "layout": 1.2,
+         "paint": 8.9,
+         "other": 11.9
+        }
+       },
+       {
+        "ms": 54.1,
+        "kinds": {
+         "script": 20.7,
+         "paint": 6.8,
+         "gc": 25.7,
+         "other": 0.8
+        }
+       },
+       {
+        "ms": 52.2,
+        "kinds": {
+         "script": 24.7,
+         "paint": 7.5,
+         "other": 20
+        }
+       },
+       {
+        "ms": 50.9,
+        "kinds": {
+         "script": 27.6,
+         "paint": 7.5,
+         "other": 15.8
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 20.74
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 4.85
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.26
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.75
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.42
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.28
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.26
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.25
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.24
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.2
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.18
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.14
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.11
+       },
+       {
+        "name": "TimerFire",
+        "msPerFrame": 0.08
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.4
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 67.3
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.2
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.2
+       }
+      ],
+      "segments": {
+       "frames": 875,
+       "ms": {
+        "layout": {
+         "mean": 0.4,
+         "p95": 1.3,
+         "max": 12.4,
+         "n": 875
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 3.7,
+         "n": 875
+        },
+        "logik": {
+         "mean": 3.62,
+         "p95": 12.2,
+         "max": 45.4,
+         "n": 875
+        },
+        "ereignisse": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 5.6,
+         "n": 875
+        },
+        "weltbild": {
+         "mean": 14.25,
+         "p95": 22.8,
+         "max": 42,
+         "n": 875
+        },
+        "schadenszahlen": {
+         "mean": 0.1,
+         "p95": 0.2,
+         "max": 8.6,
+         "n": 875
+        },
+        "hud": {
+         "mean": 1.68,
+         "p95": 7.7,
+         "max": 17.7,
+         "n": 875
+        },
+        "ressourcenleiste": {
+         "mean": 0.06,
+         "p95": 0.3,
+         "max": 1.7,
+         "n": 875
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.3,
+         "n": 875
+        },
+        "rest": {
+         "mean": 0.17,
+         "p95": 1,
+         "max": 4.4,
+         "n": 875
+        }
+       },
+       "worst": [
+        {
+         "ms": 62.9,
+         "logik": 45.4,
+         "weltbild": 8.4,
+         "hud": 8.6
+        },
+        {
+         "ms": 44.4,
+         "logik": 2,
+         "weltbild": 42
+        },
+        {
+         "ms": 37,
+         "logik": 15.8,
+         "weltbild": 15.8,
+         "hud": 5.2
+        },
+        {
+         "ms": 36.8,
+         "weltbild": 28,
+         "hud": 8.1
+        },
+        {
+         "ms": 36.8,
+         "logik": 2.1,
+         "weltbild": 25.5,
+         "hud": 7.8,
+         "rest": 1
+        },
+        {
+         "ms": 36.5,
+         "logik": 3.6,
+         "weltbild": 25.9,
+         "hud": 6.7
+        },
+        {
+         "ms": 35.3,
+         "logik": 1.6,
+         "weltbild": 25.6,
+         "hud": 7.3
+        },
+        {
+         "ms": 35.2,
+         "logik": 14.2,
+         "weltbild": 13,
+         "hud": 7.2
+        }
+       ]
+      },
+      "extra": {}
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 4,
+   "scene": "walk",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 731,
+    "seconds": 40.4,
+    "fps": 18.1,
+    "mainPerFrame": {
+     "n": 731,
+     "mean": 51.08,
+     "p50": 49.61,
+     "p95": 84.2,
+     "p99": 108.54,
+     "max": 131.76,
+     "over16": 717,
+     "over33": 593,
+     "over50": 358
+    },
+    "interval": {
+     "n": 731,
+     "mean": 55.2,
+     "p50": 54.33,
+     "p95": 90.22,
+     "p99": 123.99,
+     "max": 136.4,
+     "over16": 719,
+     "over33": 618,
+     "over50": 417
+    },
+    "kindsMean": {
+     "script": 30.36,
+     "style": 2.72,
+     "layout": 0.9,
+     "paint": 13.07,
+     "gc": 0.43,
+     "idle": 0,
+     "input": 0.06,
+     "other": 3.55
+    },
+    "kindsP95": {
+     "script": 57.42,
+     "style": 8.82,
+     "layout": 3.58,
+     "paint": 29.18,
+     "gc": 0,
+     "idle": 0,
+     "input": 0.21,
+     "other": 9.58
+    },
+    "longTasks": {
+     "count": 304,
+     "max": 122.9
+    },
+    "gc": {
+     "count": 310,
+     "totalMs": 369.6,
+     "maxMs": 36.3,
+     "perSecond": 7.7
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 0,
+       "hits": 1214
+      }
+     },
+     "after": {
+      "x": 10697,
+      "y": 10123,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 5,
+       "strips": 10,
+       "hits": 1901
+      }
+     },
+     "trace": {
+      "frames": 363,
+      "seconds": 20.3,
+      "fps": 17.9,
+      "mainPerFrame": {
+       "n": 363,
+       "mean": 52.63,
+       "p50": 51.32,
+       "p95": 86,
+       "p99": 123.63,
+       "max": 131.76,
+       "over16": 360,
+       "over33": 299,
+       "over50": 184
+      },
+      "rafTask": {
+       "n": 363,
+       "mean": 48.57,
+       "p50": 46.68,
+       "p95": 82.4,
+       "p99": 111.48,
+       "max": 122.89,
+       "over16": 356,
+       "over33": 281,
+       "over50": 160
+      },
+      "interval": {
+       "n": 363,
+       "mean": 55.78,
+       "p50": 54.56,
+       "p95": 90.01,
+       "p99": 125.05,
+       "max": 133,
+       "over16": 360,
+       "over33": 311,
+       "over50": 205
+      },
+      "kindsMean": {
+       "script": 31.38,
+       "style": 2.91,
+       "layout": 0.9,
+       "paint": 13.16,
+       "gc": 0.43,
+       "idle": 0,
+       "input": 0.05,
+       "other": 3.81
+      },
+      "kindsP95": {
+       "script": 60.34,
+       "style": 9.18,
+       "layout": 4.14,
+       "paint": 28.4,
+       "gc": 0,
+       "idle": 0,
+       "input": 0.41,
+       "other": 11.29
+      },
+      "styleRecalcsPerFrame": 1.81,
+      "styleElementsPerFrame": 8.1,
+      "layoutsPerFrame": 0.49,
+      "forcedPerFrame": 0.96,
+      "longTasks": {
+       "count": 161,
+       "max": 122.9
+      },
+      "gc": {
+       "count": 121,
+       "totalMs": 177.3,
+       "maxMs": 27.9,
+       "perSecond": 6
+      },
+      "worstFrames": [
+       {
+        "ms": 131.8,
+        "kinds": {
+         "script": 99.7,
+         "style": 0.6,
+         "layout": 0.8,
+         "paint": 9.7,
+         "other": 21
+        }
+       },
+       {
+        "ms": 125.5,
+        "kinds": {
+         "script": 73.3,
+         "style": 3.4,
+         "layout": 7.8,
+         "paint": 33.4,
+         "other": 7.5
+        }
+       },
+       {
+        "ms": 124.5,
+        "kinds": {
+         "script": 63.4,
+         "style": 22.3,
+         "layout": 13.4,
+         "paint": 20,
+         "gc": 2.8,
+         "input": 0.7,
+         "other": 2
+        }
+       },
+       {
+        "ms": 123.6,
+        "kinds": {
+         "script": 107.6,
+         "style": 2.5,
+         "paint": 9.2,
+         "other": 4.3
+        }
+       },
+       {
+        "ms": 113.7,
+        "kinds": {
+         "script": 96.5,
+         "style": 3.4,
+         "layout": 1,
+         "paint": 9.9,
+         "other": 2.9
+        }
+       },
+       {
+        "ms": 110.6,
+        "kinds": {
+         "script": 28,
+         "style": 1,
+         "layout": 1,
+         "paint": 15.6,
+         "other": 64.9
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 29.68
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 8.03
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.91
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.46
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.3
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.24
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.24
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.9
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.83
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.59
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.57
+       },
+       {
+        "name": "Decode Image",
+        "msPerFrame": 0.4
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.32
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.27
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 94.4
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 84.1
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 4.4
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 3.9
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.7
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 1.4
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 1.3
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.1
+       },
+       {
+        "thread": "Chrome_ChildIOThread",
+        "busyPct": 1
+       }
+      ],
+      "segments": {
+       "frames": 697,
+       "ms": {
+        "layout": {
+         "mean": 2.03,
+         "p95": 8.5,
+         "max": 38.9,
+         "n": 697
+        },
+        "vorlauf": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 8.2,
+         "n": 697
+        },
+        "logik": {
+         "mean": 6.34,
+         "p95": 13.7,
+         "max": 50.7,
+         "n": 697
+        },
+        "ereignisse": {
+         "mean": 0.15,
+         "p95": 0.4,
+         "max": 13,
+         "n": 697
+        },
+        "weltbild": {
+         "mean": 12.59,
+         "p95": 28.2,
+         "max": 97.1,
+         "n": 697
+        },
+        "schadenszahlen": {
+         "mean": 0.22,
+         "p95": 0.5,
+         "max": 7.7,
+         "n": 697
+        },
+        "hud": {
+         "mean": 4.59,
+         "p95": 19.1,
+         "max": 40,
+         "n": 697
+        },
+        "ressourcenleiste": {
+         "mean": 0.27,
+         "p95": 0.6,
+         "max": 6.2,
+         "n": 697
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.1,
+         "max": 0.3,
+         "n": 697
+        },
+        "rest": {
+         "mean": 0.52,
+         "p95": 2,
+         "max": 11,
+         "n": 697
+        }
+       },
+       "worst": [
+        {
+         "ms": 105.5,
+         "layout": 3.2,
+         "logik": 4.4,
+         "weltbild": 97.1
+        },
+        {
+         "ms": 95,
+         "layout": 6.4,
+         "logik": 38.4,
+         "weltbild": 37.4,
+         "hud": 10.7,
+         "rest": 1.8
+        },
+        {
+         "ms": 89.8,
+         "logik": 22.2,
+         "ereignisse": 13,
+         "weltbild": 14.2,
+         "hud": 37.5,
+         "rest": 1.8
+        },
+        {
+         "ms": 76.8,
+         "logik": 1.8,
+         "weltbild": 73.5
+        },
+        {
+         "ms": 74.4,
+         "layout": 1.6,
+         "logik": 21.7,
+         "weltbild": 31.3,
+         "hud": 18.7
+        },
+        {
+         "ms": 71.1,
+         "layout": 1.4,
+         "logik": 50.7,
+         "ereignisse": 3.5,
+         "weltbild": 14.3,
+         "ressourcenleiste": 1
+        },
+        {
+         "ms": 69.3,
+         "logik": 4.4,
+         "weltbild": 56.1,
+         "hud": 7.3,
+         "rest": 1
+        },
+        {
+         "ms": 67.3,
+         "logik": 9,
+         "weltbild": 19.8,
+         "hud": 36.6,
+         "rest": 1.1
+        }
+       ]
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    },
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 1280
+      }
+     },
+     "after": {
+      "x": 10701,
+      "y": 10128,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 5,
+       "strips": 11,
+       "hits": 1965
+      }
+     },
+     "trace": {
+      "frames": 368,
+      "seconds": 20.2,
+      "fps": 18.3,
+      "mainPerFrame": {
+       "n": 368,
+       "mean": 49.55,
+       "p50": 48.42,
+       "p95": 81.75,
+       "p99": 98.6,
+       "max": 111.4,
+       "over16": 357,
+       "over33": 294,
+       "over50": 174
+      },
+      "rafTask": {
+       "n": 368,
+       "mean": 45.97,
+       "p50": 44.8,
+       "p95": 78.45,
+       "p99": 94.42,
+       "max": 109.01,
+       "over16": 351,
+       "over33": 274,
+       "over50": 142
+      },
+      "interval": {
+       "n": 368,
+       "mean": 54.63,
+       "p50": 53.94,
+       "p95": 93.35,
+       "p99": 113.83,
+       "max": 136.4,
+       "over16": 359,
+       "over33": 307,
+       "over50": 212
+      },
+      "kindsMean": {
+       "script": 29.35,
+       "style": 2.53,
+       "layout": 0.9,
+       "paint": 12.99,
+       "gc": 0.44,
+       "idle": 0,
+       "input": 0.06,
+       "other": 3.29
+      },
+      "kindsP95": {
+       "script": 56.2,
+       "style": 8.03,
+       "layout": 3.42,
+       "paint": 30.09,
+       "gc": 0,
+       "idle": 0,
+       "input": 0.16,
+       "other": 8.72
+      },
+      "styleRecalcsPerFrame": 1.81,
+      "styleElementsPerFrame": 8.1,
+      "layoutsPerFrame": 0.49,
+      "forcedPerFrame": 0.95,
+      "longTasks": {
+       "count": 143,
+       "max": 109
+      },
+      "gc": {
+       "count": 189,
+       "totalMs": 192.4,
+       "maxMs": 36.3,
+       "perSecond": 9.4
+      },
+      "worstFrames": [
+       {
+        "ms": 111.4,
+        "kinds": {
+         "script": 78.4,
+         "style": 9.9,
+         "layout": 1.4,
+         "paint": 15.2,
+         "other": 6.6
+        }
+       },
+       {
+        "ms": 106.5,
+        "kinds": {
+         "script": 69.1,
+         "style": 8.6,
+         "layout": 2.4,
+         "paint": 18.1,
+         "other": 8.2
+        }
+       },
+       {
+        "ms": 100.9,
+        "kinds": {
+         "script": 46.6,
+         "style": 6.5,
+         "layout": 1.2,
+         "paint": 37.8,
+         "other": 8.7
+        }
+       },
+       {
+        "ms": 98.6,
+        "kinds": {
+         "script": 56.6,
+         "style": 3.4,
+         "layout": 1.4,
+         "paint": 34,
+         "other": 3.2
+        }
+       },
+       {
+        "ms": 98.1,
+        "kinds": {
+         "script": 39.4,
+         "style": 7,
+         "layout": 5.8,
+         "paint": 42.3,
+         "other": 3.5
+        }
+       },
+       {
+        "ms": 96.7,
+        "kinds": {
+         "script": 57.6,
+         "style": 7.2,
+         "layout": 13.3,
+         "paint": 15.6,
+         "other": 3
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 27.69
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 7.46
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.53
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.52
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.52
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.26
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.02
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.93
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.9
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.69
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.51
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.36
+       },
+       {
+        "name": "Decode Image",
+        "msPerFrame": 0.27
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.25
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 90.7
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 87.1
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 4.1
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 4
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.8
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 1.1
+       },
+       {
+        "thread": "Chrome_ChildIOThread",
+        "busyPct": 1
+       }
+      ],
+      "segments": {
+       "frames": 695,
+       "ms": {
+        "layout": {
+         "mean": 2.06,
+         "p95": 9.1,
+         "max": 17.9,
+         "n": 695
+        },
+        "vorlauf": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 5.5,
+         "n": 695
+        },
+        "logik": {
+         "mean": 6.01,
+         "p95": 13.9,
+         "max": 43,
+         "n": 695
+        },
+        "ereignisse": {
+         "mean": 0.21,
+         "p95": 0.6,
+         "max": 22.4,
+         "n": 695
+        },
+        "weltbild": {
+         "mean": 12.88,
+         "p95": 28.4,
+         "max": 46.5,
+         "n": 695
+        },
+        "schadenszahlen": {
+         "mean": 0.21,
+         "p95": 0.6,
+         "max": 6.2,
+         "n": 695
+        },
+        "hud": {
+         "mean": 4.17,
+         "p95": 16.9,
+         "max": 35.6,
+         "n": 695
+        },
+        "ressourcenleiste": {
+         "mean": 0.32,
+         "p95": 0.8,
+         "max": 7.3,
+         "n": 695
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.1,
+         "max": 2,
+         "n": 695
+        },
+        "rest": {
+         "mean": 0.53,
+         "p95": 1.9,
+         "max": 10.5,
+         "n": 695
+        }
+       },
+       "worst": [
+        {
+         "ms": 74.4,
+         "layout": 1.1,
+         "logik": 36.6,
+         "ereignisse": 22.4,
+         "weltbild": 8.4,
+         "rest": 5.2
+        },
+        {
+         "ms": 69.9,
+         "layout": 3,
+         "logik": 18.2,
+         "weltbild": 28.4,
+         "schadenszahlen": 1.2,
+         "hud": 13.1,
+         "rest": 5.6
+        },
+        {
+         "ms": 67.3,
+         "logik": 8.2,
+         "weltbild": 32,
+         "hud": 26
+        },
+        {
+         "ms": 63.9,
+         "logik": 1,
+         "weltbild": 25.8,
+         "hud": 35.6
+        },
+        {
+         "ms": 63,
+         "layout": 4.3,
+         "vorlauf": 3.4,
+         "logik": 8.1,
+         "weltbild": 30,
+         "hud": 16.9
+        },
+        {
+         "ms": 62.7,
+         "layout": 3.6,
+         "logik": 19.6,
+         "ereignisse": 5.2,
+         "weltbild": 33.5
+        },
+        {
+         "ms": 62,
+         "layout": 2.9,
+         "logik": 34,
+         "weltbild": 23.2,
+         "rest": 1.2
+        },
+        {
+         "ms": 61.4,
+         "logik": 12,
+         "weltbild": 36.7,
+         "hud": 6.8,
+         "rest": 5.3
+        }
+       ]
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 4,
+   "scene": "combat",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 1104,
+    "seconds": 41.4,
+    "fps": 26.7,
+    "mainPerFrame": {
+     "n": 1104,
+     "mean": 34.3,
+     "p50": 31.6,
+     "p95": 65.49,
+     "p99": 84.16,
+     "max": 130.53,
+     "over16": 955,
+     "over33": 512,
+     "over50": 189
+    },
+    "interval": {
+     "n": 1104,
+     "mean": 37.41,
+     "p50": 34.66,
+     "p95": 67.26,
+     "p99": 84.35,
+     "max": 130.71,
+     "over16": 1032,
+     "over33": 590,
+     "over50": 232
+    },
+    "kindsMean": {
+     "script": 17.67,
+     "style": 2.41,
+     "layout": 0.64,
+     "paint": 11.18,
+     "gc": 0.25,
+     "idle": 0,
+     "input": 0.1,
+     "other": 2.05
+    },
+    "kindsP95": {
+     "script": 38.37,
+     "style": 9.62,
+     "layout": 3,
+     "paint": 24.81,
+     "gc": 0,
+     "idle": 0,
+     "input": 0.63,
+     "other": 6.99
+    },
+    "longTasks": {
+     "count": 163,
+     "max": 125.6
+    },
+    "gc": {
+     "count": 406,
+     "totalMs": 313.3,
+     "maxMs": 52.6,
+     "perSecond": 9.8
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 5,
+       "strips": 16,
+       "hits": 1964
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 2445,
+      "chunks": 6,
+      "ground": {
+       "full": 7,
+       "strips": 16,
+       "hits": 2836
+      }
+     },
+     "trace": {
+      "frames": 540,
+      "seconds": 20.6,
+      "fps": 26.2,
+      "mainPerFrame": {
+       "n": 540,
+       "mean": 35.27,
+       "p50": 33.43,
+       "p95": 66.13,
+       "p99": 86.78,
+       "max": 112.1,
+       "over16": 466,
+       "over33": 270,
+       "over50": 97
+      },
+      "rafTask": {
+       "n": 540,
+       "mean": 33.58,
+       "p50": 31.76,
+       "p95": 64.89,
+       "p99": 82.98,
+       "max": 92.45,
+       "over16": 456,
+       "over33": 247,
+       "over50": 85
+      },
+      "interval": {
+       "n": 540,
+       "mean": 38.13,
+       "p50": 35.54,
+       "p95": 69.09,
+       "p99": 86.82,
+       "max": 112.15,
+       "over16": 505,
+       "over33": 304,
+       "over50": 117
+      },
+      "kindsMean": {
+       "script": 18.43,
+       "style": 2.52,
+       "layout": 0.65,
+       "paint": 11.21,
+       "gc": 0.29,
+       "idle": 0,
+       "input": 0.09,
+       "other": 2.09
+      },
+      "kindsP95": {
+       "script": 38.96,
+       "style": 9.89,
+       "layout": 3.03,
+       "paint": 23.68,
+       "gc": 0,
+       "idle": 0,
+       "input": 0.67,
+       "other": 6.9
+      },
+      "styleRecalcsPerFrame": 1.8,
+      "styleElementsPerFrame": 15,
+      "layoutsPerFrame": 0.49,
+      "forcedPerFrame": 1.23,
+      "longTasks": {
+       "count": 86,
+       "max": 92.4
+      },
+      "gc": {
+       "count": 187,
+       "totalMs": 178.9,
+       "maxMs": 52.6,
+       "perSecond": 9.1
+      },
+      "worstFrames": [
+       {
+        "ms": 112.1,
+        "kinds": {
+         "script": 29.2,
+         "style": 2.6,
+         "paint": 16.9,
+         "gc": 59.9,
+         "other": 3.5
+        }
+       },
+       {
+        "ms": 93.3,
+        "kinds": {
+         "script": 43.4,
+         "style": 11.5,
+         "layout": 21.3,
+         "paint": 13.2,
+         "input": 0.8,
+         "other": 3.2
+        }
+       },
+       {
+        "ms": 93,
+        "kinds": {
+         "script": 64.1,
+         "style": 10.3,
+         "layout": 2.6,
+         "paint": 14.2,
+         "other": 1.8
+        }
+       },
+       {
+        "ms": 91.9,
+        "kinds": {
+         "script": 29.5,
+         "style": 14.7,
+         "layout": 7.5,
+         "paint": 26.7,
+         "input": 1.4,
+         "other": 12.1
+        }
+       },
+       {
+        "ms": 87.4,
+        "kinds": {
+         "script": 45,
+         "style": 7.4,
+         "layout": 5.5,
+         "paint": 20.8,
+         "other": 8.5
+        }
+       },
+       {
+        "ms": 86.8,
+        "kinds": {
+         "script": 52.2,
+         "style": 2.2,
+         "paint": 30.7,
+         "other": 1.3
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 17.87
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 6.99
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.52
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.24
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.91
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.87
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.75
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.69
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.65
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.6
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.25
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.21
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.2
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.19
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 92.5
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 86.8
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 4.5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 4.4
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.5
+       }
+      ],
+      "segments": {
+       "frames": 872,
+       "ms": {
+        "layout": {
+         "mean": 1.51,
+         "p95": 5.2,
+         "max": 15.2,
+         "n": 872
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 3.7,
+         "n": 872
+        },
+        "logik": {
+         "mean": 3.31,
+         "p95": 10,
+         "max": 22.3,
+         "n": 872
+        },
+        "ereignisse": {
+         "mean": 0.09,
+         "p95": 0.3,
+         "max": 6.5,
+         "n": 872
+        },
+        "weltbild": {
+         "mean": 10.89,
+         "p95": 27.9,
+         "max": 41.9,
+         "n": 872
+        },
+        "schadenszahlen": {
+         "mean": 0.14,
+         "p95": 0.4,
+         "max": 7.2,
+         "n": 872
+        },
+        "hud": {
+         "mean": 2.07,
+         "p95": 12.5,
+         "max": 42.2,
+         "n": 872
+        },
+        "ressourcenleiste": {
+         "mean": 0.31,
+         "p95": 1,
+         "max": 7.2,
+         "n": 872
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.8,
+         "n": 872
+        },
+        "rest": {
+         "mean": 0.23,
+         "p95": 1.2,
+         "max": 7.2,
+         "n": 872
+        }
+       },
+       "worst": [
+        {
+         "ms": 76.9,
+         "layout": 15.2,
+         "logik": 10.9,
+         "weltbild": 7.5,
+         "hud": 42.2
+        },
+        {
+         "ms": 63.2,
+         "logik": 13.7,
+         "weltbild": 34.4,
+         "hud": 12.5,
+         "rest": 1.1
+        },
+        {
+         "ms": 63,
+         "weltbild": 28,
+         "hud": 31.2,
+         "ressourcenleiste": 1,
+         "rest": 1.8
+        },
+        {
+         "ms": 58.7,
+         "layout": 2,
+         "logik": 6.7,
+         "weltbild": 26.8,
+         "hud": 22.8
+        },
+        {
+         "ms": 57.7,
+         "layout": 9.7,
+         "logik": 18.1,
+         "weltbild": 13.8,
+         "hud": 13.5,
+         "rest": 1.9
+        },
+        {
+         "ms": 57.3,
+         "layout": 2.2,
+         "logik": 3,
+         "weltbild": 37.8,
+         "hud": 13.7
+        },
+        {
+         "ms": 52.6,
+         "layout": 3.7,
+         "logik": 10,
+         "weltbild": 32.3,
+         "ressourcenleiste": 5.6
+        },
+        {
+         "ms": 51.5,
+         "layout": 4.5,
+         "logik": 8,
+         "weltbild": 38.8
+        }
+       ]
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 5,
+       "strips": 17,
+       "hits": 2034
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 2862,
+      "chunks": 6,
+      "ground": {
+       "full": 7,
+       "strips": 17,
+       "hits": 2965
+      }
+     },
+     "trace": {
+      "frames": 564,
+      "seconds": 20.7,
+      "fps": 27.2,
+      "mainPerFrame": {
+       "n": 564,
+       "mean": 33.37,
+       "p50": 29.99,
+       "p95": 63.62,
+       "p99": 80.11,
+       "max": 130.53,
+       "over16": 489,
+       "over33": 242,
+       "over50": 92
+      },
+      "rafTask": {
+       "n": 564,
+       "mean": 31.74,
+       "p50": 28.36,
+       "p95": 62.06,
+       "p99": 79.29,
+       "max": 125.62,
+       "over16": 472,
+       "over33": 224,
+       "over50": 77
+      },
+      "interval": {
+       "n": 564,
+       "mean": 36.71,
+       "p50": 33.85,
+       "p95": 66.76,
+       "p99": 81.02,
+       "max": 130.71,
+       "over16": 528,
+       "over33": 286,
+       "over50": 115
+      },
+      "kindsMean": {
+       "script": 16.95,
+       "style": 2.31,
+       "layout": 0.64,
+       "paint": 11.16,
+       "gc": 0.2,
+       "idle": 0,
+       "input": 0.11,
+       "other": 2.01
+      },
+      "kindsP95": {
+       "script": 38.25,
+       "style": 9.51,
+       "layout": 3,
+       "paint": 24.96,
+       "gc": 0,
+       "idle": 0,
+       "input": 0.63,
+       "other": 7.11
+      },
+      "styleRecalcsPerFrame": 1.74,
+      "styleElementsPerFrame": 15.2,
+      "layoutsPerFrame": 0.48,
+      "forcedPerFrame": 1.23,
+      "longTasks": {
+       "count": 77,
+       "max": 125.6
+      },
+      "gc": {
+       "count": 219,
+       "totalMs": 134.7,
+       "maxMs": 19.8,
+       "perSecond": 10.6
+      },
+      "worstFrames": [
+       {
+        "ms": 130.5,
+        "kinds": {
+         "script": 49,
+         "style": 17.6,
+         "layout": 10.4,
+         "paint": 49,
+         "input": 0.6,
+         "other": 4
+        }
+       },
+       {
+        "ms": 86.8,
+        "kinds": {
+         "script": 45.3,
+         "style": 6.2,
+         "layout": 7.4,
+         "paint": 11.2,
+         "input": 5.9,
+         "other": 10.8
+        }
+       },
+       {
+        "ms": 84.5,
+        "kinds": {
+         "script": 60.1,
+         "style": 5,
+         "layout": 1.2,
+         "paint": 17,
+         "other": 1.1
+        }
+       },
+       {
+        "ms": 84.2,
+        "kinds": {
+         "script": 11.4,
+         "style": 25.1,
+         "layout": 2.3,
+         "paint": 39.6,
+         "input": 1.1,
+         "other": 4.6
+        }
+       },
+       {
+        "ms": 81,
+        "kinds": {
+         "script": 40.5,
+         "style": 6.6,
+         "layout": 1.8,
+         "paint": 30.9,
+         "other": 1.2
+        }
+       },
+       {
+        "ms": 80.1,
+        "kinds": {
+         "script": 48.3,
+         "style": 10.8,
+         "layout": 2.8,
+         "paint": 16.7,
+         "other": 1.6
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 16.39
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 6.88
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.31
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.26
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.04
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.76
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.75
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.73
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.64
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.55
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.25
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.23
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.2
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame::commit",
+        "msPerFrame": 0.16
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 90.9
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 88.1
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 4.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 4.4
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.8
+       }
+      ],
+      "segments": {
+       "frames": 931,
+       "ms": {
+        "layout": {
+         "mean": 1.27,
+         "p95": 3.8,
+         "max": 13.7,
+         "n": 931
+        },
+        "vorlauf": {
+         "mean": 0.05,
+         "p95": 0.2,
+         "max": 10,
+         "n": 931
+        },
+        "logik": {
+         "mean": 2.93,
+         "p95": 9.2,
+         "max": 16.5,
+         "n": 931
+        },
+        "ereignisse": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 6.4,
+         "n": 931
+        },
+        "weltbild": {
+         "mean": 9.86,
+         "p95": 25.3,
+         "max": 65.9,
+         "n": 931
+        },
+        "schadenszahlen": {
+         "mean": 0.13,
+         "p95": 0.4,
+         "max": 6.3,
+         "n": 931
+        },
+        "hud": {
+         "mean": 2.15,
+         "p95": 12.8,
+         "max": 27.4,
+         "n": 931
+        },
+        "ressourcenleiste": {
+         "mean": 0.25,
+         "p95": 0.7,
+         "max": 7.3,
+         "n": 931
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.3,
+         "n": 931
+        },
+        "rest": {
+         "mean": 0.19,
+         "p95": 1.1,
+         "max": 8,
+         "n": 931
+        }
+       },
+       "worst": [
+        {
+         "ms": 82.4,
+         "logik": 1.2,
+         "weltbild": 65.9,
+         "hud": 14
+        },
+        {
+         "ms": 68.2,
+         "layout": 1.3,
+         "logik": 3,
+         "weltbild": 48.8,
+         "schadenszahlen": 2,
+         "hud": 12.7
+        },
+        {
+         "ms": 59.6,
+         "logik": 2.9,
+         "weltbild": 31.7,
+         "hud": 23.2
+        },
+        {
+         "ms": 58.5,
+         "logik": 15.5,
+         "weltbild": 28.4,
+         "hud": 12.8,
+         "rest": 1.2
+        },
+        {
+         "ms": 56.1,
+         "layout": 6.8,
+         "logik": 4.8,
+         "weltbild": 27.5,
+         "hud": 15.6
+        },
+        {
+         "ms": 54.9,
+         "logik": 3,
+         "weltbild": 32.8,
+         "hud": 17.8
+        },
+        {
+         "ms": 51.6,
+         "layout": 1.2,
+         "logik": 12.7,
+         "weltbild": 21.1,
+         "hud": 15.9
+        },
+        {
+         "ms": 51,
+         "layout": 11.3,
+         "logik": 4,
+         "weltbild": 34.5
+        }
+       ]
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "idle",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 1148,
+    "seconds": 40.1,
+    "fps": 28.7,
+    "mainPerFrame": {
+     "n": 1148,
+     "mean": 34.25,
+     "p50": 34.43,
+     "p95": 62.85,
+     "p99": 71.8,
+     "max": 115.7,
+     "over16": 931,
+     "over33": 602,
+     "over50": 193
+    },
+    "interval": {
+     "n": 1148,
+     "mean": 34.83,
+     "p50": 34.48,
+     "p95": 63.1,
+     "p99": 72.31,
+     "max": 115.74,
+     "over16": 967,
+     "over33": 607,
+     "over50": 195
+    },
+    "kindsMean": {
+     "script": 19.79,
+     "style": 0.5,
+     "layout": 0.42,
+     "paint": 11.47,
+     "gc": 0.19,
+     "idle": 0,
+     "input": 0.04,
+     "other": 1.85
+    },
+    "kindsP95": {
+     "script": 39.65,
+     "style": 2.43,
+     "layout": 2.02,
+     "paint": 21.12,
+     "gc": 0,
+     "idle": 0,
+     "input": 0,
+     "other": 7.07
+    },
+    "longTasks": {
+     "count": 164,
+     "max": 114.1
+    },
+    "gc": {
+     "count": 141,
+     "totalMs": 292.2,
+     "maxMs": 40.5,
+     "perSecond": 3.5
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 7,
+       "strips": 16,
+       "hits": 2915
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 8,
+       "strips": 16,
+       "hits": 3600
+      }
+     },
+     "trace": {
+      "frames": 553,
+      "seconds": 20,
+      "fps": 27.6,
+      "mainPerFrame": {
+       "n": 553,
+       "mean": 35.66,
+       "p50": 35.7,
+       "p95": 63.31,
+       "p99": 73.04,
+       "max": 115.7,
+       "over16": 464,
+       "over33": 316,
+       "over50": 101
+      },
+      "rafTask": {
+       "n": 553,
+       "mean": 33.97,
+       "p50": 34.08,
+       "p95": 62.44,
+       "p99": 70.01,
+       "max": 114.13,
+       "over16": 447,
+       "over33": 294,
+       "over50": 89
+      },
+      "interval": {
+       "n": 553,
+       "mean": 36.16,
+       "p50": 35.75,
+       "p95": 63.67,
+       "p99": 73.76,
+       "max": 115.74,
+       "over16": 480,
+       "over33": 317,
+       "over50": 101
+      },
+      "kindsMean": {
+       "script": 20.49,
+       "style": 0.55,
+       "layout": 0.47,
+       "paint": 11.87,
+       "gc": 0.21,
+       "idle": 0,
+       "input": 0.05,
+       "other": 2.02
+      },
+      "kindsP95": {
+       "script": 40.97,
+       "style": 2.6,
+       "layout": 2.19,
+       "paint": 21.08,
+       "gc": 0,
+       "idle": 0,
+       "input": 0,
+       "other": 7.59
+      },
+      "styleRecalcsPerFrame": 0.29,
+      "styleElementsPerFrame": 2,
+      "layoutsPerFrame": 0.29,
+      "forcedPerFrame": 0.01,
+      "longTasks": {
+       "count": 89,
+       "max": 114.1
+      },
+      "gc": {
+       "count": 74,
+       "totalMs": 160.2,
+       "maxMs": 40.5,
+       "perSecond": 3.7
+      },
+      "worstFrames": [
+       {
+        "ms": 115.7,
+        "kinds": {
+         "script": 43.9,
+         "style": 3.4,
+         "layout": 1.4,
+         "paint": 17.4,
+         "gc": 47.2,
+         "other": 2.3
+        }
+       },
+       {
+        "ms": 81.5,
+        "kinds": {
+         "script": 49.5,
+         "style": 2,
+         "layout": 1.6,
+         "paint": 17.4,
+         "input": 0.8,
+         "other": 10.1
+        }
+       },
+       {
+        "ms": 80.8,
+        "kinds": {
+         "script": 39,
+         "style": 3,
+         "layout": 2.2,
+         "paint": 24.8,
+         "other": 11.7
+        }
+       },
+       {
+        "ms": 79.6,
+        "kinds": {
+         "script": 48.4,
+         "style": 2.4,
+         "layout": 2.8,
+         "paint": 23.9,
+         "other": 2.2
+        }
+       },
+       {
+        "ms": 73.4,
+        "kinds": {
+         "script": 51.5,
+         "style": 1.6,
+         "layout": 1.4,
+         "paint": 17.2,
+         "other": 1.6
+        }
+       },
+       {
+        "ms": 73,
+        "kinds": {
+         "script": 33.4,
+         "style": 2.4,
+         "layout": 1.4,
+         "paint": 18.1,
+         "other": 17.7
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 19.76
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 8.99
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.59
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.59
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.55
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.47
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.36
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.36
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.27
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.26
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.23
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.2
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.18
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 98.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 58
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 4.5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2
+       }
+      ],
+      "segments": {
+       "frames": 684,
+       "ms": {
+        "layout": {
+         "mean": 0.84,
+         "p95": 3.6,
+         "max": 13.8,
+         "n": 684
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 2.3,
+         "n": 684
+        },
+        "logik": {
+         "mean": 5.57,
+         "p95": 14.8,
+         "max": 21.8,
+         "n": 684
+        },
+        "ereignisse": {
+         "mean": 0.03,
+         "p95": 0.1,
+         "max": 3.6,
+         "n": 684
+        },
+        "weltbild": {
+         "mean": 10.73,
+         "p95": 24.5,
+         "max": 71.4,
+         "n": 684
+        },
+        "schadenszahlen": {
+         "mean": 0.1,
+         "p95": 0.3,
+         "max": 4.6,
+         "n": 684
+        },
+        "hud": {
+         "mean": 2.13,
+         "p95": 11.2,
+         "max": 18.1,
+         "n": 684
+        },
+        "ressourcenleiste": {
+         "mean": 0.13,
+         "p95": 0.6,
+         "max": 2.8,
+         "n": 684
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.3,
+         "n": 684
+        },
+        "rest": {
+         "mean": 0.27,
+         "p95": 1.8,
+         "max": 6.3,
+         "n": 684
+        }
+       },
+       "worst": [
+        {
+         "ms": 88.5,
+         "logik": 3.3,
+         "weltbild": 71.4,
+         "hud": 13
+        },
+        {
+         "ms": 51.3,
+         "logik": 21.8,
+         "weltbild": 15.6,
+         "hud": 12
+        },
+        {
+         "ms": 49.9,
+         "logik": 20.6,
+         "weltbild": 15.6,
+         "hud": 12.6
+        },
+        {
+         "ms": 49.9,
+         "weltbild": 40,
+         "hud": 8.6
+        },
+        {
+         "ms": 49.7,
+         "logik": 16.5,
+         "weltbild": 18.5,
+         "hud": 14.2
+        },
+        {
+         "ms": 49.5,
+         "layout": 1.2,
+         "logik": 16.5,
+         "weltbild": 31.6
+        },
+        {
+         "ms": 48.5,
+         "logik": 7.3,
+         "weltbild": 31.2,
+         "hud": 9.1
+        },
+        {
+         "ms": 46.8,
+         "logik": 6,
+         "weltbild": 29.8,
+         "hud": 10.3
+        }
+       ]
+      },
+      "extra": {}
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 7,
+       "strips": 17,
+       "hits": 3053
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 8,
+       "strips": 17,
+       "hits": 3787
+      }
+     },
+     "trace": {
+      "frames": 595,
+      "seconds": 20,
+      "fps": 29.7,
+      "mainPerFrame": {
+       "n": 595,
+       "mean": 32.93,
+       "p50": 32.33,
+       "p95": 62.57,
+       "p99": 71.74,
+       "max": 78.9,
+       "over16": 467,
+       "over33": 286,
+       "over50": 92
+      },
+      "rafTask": {
+       "n": 595,
+       "mean": 31.74,
+       "p50": 31.37,
+       "p95": 60.08,
+       "p99": 68.81,
+       "max": 78.29,
+       "over16": 451,
+       "over33": 270,
+       "over50": 74
+      },
+      "interval": {
+       "n": 595,
+       "mean": 33.59,
+       "p50": 32.42,
+       "p95": 63.03,
+       "p99": 71.77,
+       "max": 78.92,
+       "over16": 487,
+       "over33": 290,
+       "over50": 94
+      },
+      "kindsMean": {
+       "script": 19.14,
+       "style": 0.46,
+       "layout": 0.37,
+       "paint": 11.1,
+       "gc": 0.16,
+       "idle": 0,
+       "input": 0.03,
+       "other": 1.68
+      },
+      "kindsP95": {
+       "script": 38.47,
+       "style": 2.4,
+       "layout": 2,
+       "paint": 21.23,
+       "gc": 0,
+       "idle": 0,
+       "input": 0,
+       "other": 6.03
+      },
+      "styleRecalcsPerFrame": 0.27,
+      "styleElementsPerFrame": 1.8,
+      "layoutsPerFrame": 0.27,
+      "forcedPerFrame": 0.01,
+      "longTasks": {
+       "count": 75,
+       "max": 78.3
+      },
+      "gc": {
+       "count": 67,
+       "totalMs": 132,
+       "maxMs": 38.6,
+       "perSecond": 3.3
+      },
+      "worstFrames": [
+       {
+        "ms": 78.9,
+        "kinds": {
+         "script": 47,
+         "style": 2,
+         "layout": 1.8,
+         "paint": 26.2,
+         "other": 1.8
+        }
+       },
+       {
+        "ms": 77.7,
+        "kinds": {
+         "script": 26.4,
+         "paint": 9.8,
+         "gc": 39.7,
+         "other": 1.8
+        }
+       },
+       {
+        "ms": 73.6,
+        "kinds": {
+         "script": 45,
+         "style": 1.8,
+         "layout": 1.4,
+         "paint": 23.7,
+         "other": 1.6
+        }
+       },
+       {
+        "ms": 72.1,
+        "kinds": {
+         "script": 37.8,
+         "style": 1.8,
+         "layout": 2.2,
+         "paint": 27.7,
+         "other": 2.6
+        }
+       },
+       {
+        "ms": 72.1,
+        "kinds": {
+         "script": 46,
+         "style": 2.2,
+         "layout": 1.4,
+         "paint": 20.6,
+         "other": 1.9
+        }
+       },
+       {
+        "ms": 71.7,
+        "kinds": {
+         "script": 6.1,
+         "paint": 3.1,
+         "other": 62.6
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 18.53
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 8.37
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.57
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.65
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.62
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.46
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.37
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.33
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.3
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.24
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.23
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.2
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.16
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.15
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 98.1
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 62.5
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 4.7
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.2
+       }
+      ],
+      "segments": {
+       "frames": 733,
+       "ms": {
+        "layout": {
+         "mean": 0.72,
+         "p95": 3.2,
+         "max": 13.7,
+         "n": 733
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 2,
+         "n": 733
+        },
+        "logik": {
+         "mean": 5.34,
+         "p95": 14.7,
+         "max": 42.1,
+         "n": 733
+        },
+        "ereignisse": {
+         "mean": 0.03,
+         "p95": 0.2,
+         "max": 5.9,
+         "n": 733
+        },
+        "weltbild": {
+         "mean": 9.98,
+         "p95": 25.2,
+         "max": 32.4,
+         "n": 733
+        },
+        "schadenszahlen": {
+         "mean": 0.09,
+         "p95": 0.3,
+         "max": 1.9,
+         "n": 733
+        },
+        "hud": {
+         "mean": 2.25,
+         "p95": 11.4,
+         "max": 55.7,
+         "n": 733
+        },
+        "ressourcenleiste": {
+         "mean": 0.13,
+         "p95": 0.6,
+         "max": 4.6,
+         "n": 733
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.3,
+         "n": 733
+        },
+        "rest": {
+         "mean": 0.21,
+         "p95": 1.4,
+         "max": 7.1,
+         "n": 733
+        }
+       },
+       "worst": [
+        {
+         "ms": 92.8,
+         "logik": 4.3,
+         "weltbild": 30.2,
+         "hud": 55.7,
+         "rest": 2
+        },
+        {
+         "ms": 64.2,
+         "logik": 42.1,
+         "weltbild": 18.6,
+         "rest": 2
+        },
+        {
+         "ms": 51,
+         "layout": 1,
+         "logik": 21.8,
+         "weltbild": 27.8
+        },
+        {
+         "ms": 50.6,
+         "logik": 16.6,
+         "weltbild": 21,
+         "hud": 11.2,
+         "rest": 1.4
+        },
+        {
+         "ms": 49.1,
+         "logik": 17.9,
+         "weltbild": 16.9,
+         "hud": 12,
+         "rest": 1.4
+        },
+        {
+         "ms": 48,
+         "logik": 4.3,
+         "weltbild": 31.7,
+         "hud": 10.1,
+         "rest": 1.4
+        },
+        {
+         "ms": 47.6,
+         "logik": 7.8,
+         "weltbild": 23.3,
+         "hud": 13.9,
+         "rest": 1.5
+        },
+        {
+         "ms": 46.2,
+         "logik": 15.2,
+         "weltbild": 18.7,
+         "hud": 11.4
+        }
+       ]
+      },
+      "extra": {}
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "walk",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 661,
+    "seconds": 40.8,
+    "fps": 16.2,
+    "mainPerFrame": {
+     "n": 661,
+     "mean": 60.97,
+     "p50": 58.17,
+     "p95": 97.93,
+     "p99": 127.83,
+     "max": 207.58,
+     "over16": 652,
+     "over33": 615,
+     "over50": 444
+    },
+    "interval": {
+     "n": 661,
+     "mean": 61.43,
+     "p50": 58.74,
+     "p95": 98.62,
+     "p99": 127.87,
+     "max": 209.87,
+     "over16": 653,
+     "over33": 619,
+     "over50": 450
+    },
+    "kindsMean": {
+     "script": 33.45,
+     "style": 3.67,
+     "layout": 0.96,
+     "paint": 17.69,
+     "gc": 0.24,
+     "idle": 0,
+     "input": 0.08,
+     "other": 4.89
+    },
+    "kindsP95": {
+     "script": 56.17,
+     "style": 10.39,
+     "layout": 2.8,
+     "paint": 39.28,
+     "gc": 0,
+     "idle": 0,
+     "input": 1.01,
+     "other": 14.02
+    },
+    "longTasks": {
+     "count": 386,
+     "max": 178.4
+    },
+    "gc": {
+     "count": 185,
+     "totalMs": 200.9,
+     "maxMs": 54.5,
+     "perSecond": 4.5
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 9,
+       "strips": 16,
+       "hits": 3684
+      }
+     },
+     "after": {
+      "x": 10675,
+      "y": 10099,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 10,
+       "strips": 26,
+       "hits": 4148
+      }
+     },
+     "trace": {
+      "frames": 329,
+      "seconds": 20.4,
+      "fps": 16.1,
+      "mainPerFrame": {
+       "n": 329,
+       "mean": 61.4,
+       "p50": 58.06,
+       "p95": 97.93,
+       "p99": 134.68,
+       "max": 143.7,
+       "over16": 325,
+       "over33": 307,
+       "over50": 220
+      },
+      "rafTask": {
+       "n": 329,
+       "mean": 56.91,
+       "p50": 52.68,
+       "p95": 93.87,
+       "p99": 126.3,
+       "max": 138.85,
+       "over16": 323,
+       "over33": 299,
+       "over50": 188
+      },
+      "interval": {
+       "n": 329,
+       "mean": 61.87,
+       "p50": 58.37,
+       "p95": 98.32,
+       "p99": 135.23,
+       "max": 144.14,
+       "over16": 325,
+       "over33": 311,
+       "over50": 224
+      },
+      "kindsMean": {
+       "script": 33.72,
+       "style": 3.62,
+       "layout": 0.93,
+       "paint": 17.9,
+       "gc": 0.22,
+       "idle": 0,
+       "input": 0.07,
+       "other": 4.94
+      },
+      "kindsP95": {
+       "script": 57.16,
+       "style": 10.37,
+       "layout": 2.63,
+       "paint": 38.36,
+       "gc": 0,
+       "idle": 0,
+       "input": 0.99,
+       "other": 14.02
+      },
+      "styleRecalcsPerFrame": 1.83,
+      "styleElementsPerFrame": 8.6,
+      "layoutsPerFrame": 0.52,
+      "forcedPerFrame": 0.93,
+      "longTasks": {
+       "count": 189,
+       "max": 138.8
+      },
+      "gc": {
+       "count": 26,
+       "totalMs": 114.7,
+       "maxMs": 42.3,
+       "perSecond": 1.3
+      },
+      "worstFrames": [
+       {
+        "ms": 143.7,
+        "kinds": {
+         "script": 60.4,
+         "style": 7.1,
+         "layout": 2.2,
+         "paint": 65.4,
+         "other": 8.7
+        }
+       },
+       {
+        "ms": 142.1,
+        "kinds": {
+         "script": 47.5,
+         "style": 10.2,
+         "layout": 2.6,
+         "paint": 74,
+         "other": 7.8
+        }
+       },
+       {
+        "ms": 135.2,
+        "kinds": {
+         "script": 63.9,
+         "style": 11,
+         "layout": 3.8,
+         "paint": 44.1,
+         "other": 12.4
+        }
+       },
+       {
+        "ms": 134.7,
+        "kinds": {
+         "script": 51.6,
+         "style": 8.4,
+         "layout": 2.6,
+         "paint": 67.7,
+         "input": 1.2,
+         "other": 3.1
+        }
+       },
+       {
+        "ms": 130.9,
+        "kinds": {
+         "script": 69.2,
+         "style": 4.8,
+         "layout": 2.8,
+         "paint": 48.5,
+         "other": 5.6
+        }
+       },
+       {
+        "ms": 119.8,
+        "kinds": {
+         "script": 57.2,
+         "style": 1.6,
+         "layout": 1.6,
+         "paint": 57.8,
+         "other": 1.7
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 31.78
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 11.87
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.62
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.92
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.72
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.59
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.51
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.93
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.92
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.68
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.67
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.54
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.47
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.38
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.2
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 51.2
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.5
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.1
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.9
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 1.6
+       }
+      ],
+      "segments": {
+       "frames": 473,
+       "ms": {
+        "layout": {
+         "mean": 3.31,
+         "p95": 10.6,
+         "max": 16.3,
+         "n": 473
+        },
+        "vorlauf": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 4.1,
+         "n": 473
+        },
+        "logik": {
+         "mean": 7.82,
+         "p95": 16.7,
+         "max": 27,
+         "n": 473
+        },
+        "ereignisse": {
+         "mean": 0.16,
+         "p95": 0.8,
+         "max": 8.7,
+         "n": 473
+        },
+        "weltbild": {
+         "mean": 13.17,
+         "p95": 28.3,
+         "max": 53.5,
+         "n": 473
+        },
+        "schadenszahlen": {
+         "mean": 0.29,
+         "p95": 0.6,
+         "max": 6.3,
+         "n": 473
+        },
+        "hud": {
+         "mean": 5.3,
+         "p95": 16.7,
+         "max": 60.4,
+         "n": 473
+        },
+        "ressourcenleiste": {
+         "mean": 0.18,
+         "p95": 0.6,
+         "max": 5.1,
+         "n": 473
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.2,
+         "max": 0.6,
+         "n": 473
+        },
+        "rest": {
+         "mean": 0.68,
+         "p95": 2.4,
+         "max": 8.1,
+         "n": 473
+        }
+       },
+       "worst": [
+        {
+         "ms": 82.9,
+         "layout": 2.1,
+         "weltbild": 18,
+         "hud": 60.4,
+         "rest": 1.4
+        },
+        {
+         "ms": 67.3,
+         "layout": 2,
+         "logik": 11.7,
+         "weltbild": 35.2,
+         "hud": 16.9
+        },
+        {
+         "ms": 66.6,
+         "layout": 9.2,
+         "logik": 10.7,
+         "weltbild": 28.8,
+         "hud": 15.5,
+         "rest": 2.2
+        },
+        {
+         "ms": 65.7,
+         "layout": 3.1,
+         "logik": 6.6,
+         "weltbild": 53.5,
+         "rest": 2.3
+        },
+        {
+         "ms": 64.6,
+         "layout": 5.7,
+         "logik": 17.4,
+         "weltbild": 33,
+         "rest": 8.1
+        },
+        {
+         "ms": 61.2,
+         "layout": 2.1,
+         "logik": 16.4,
+         "weltbild": 15,
+         "hud": 22.6,
+         "ressourcenleiste": 4.7
+        },
+        {
+         "ms": 60.9,
+         "layout": 8.2,
+         "logik": 18.3,
+         "weltbild": 16.3,
+         "hud": 17.2
+        },
+        {
+         "ms": 60.3,
+         "layout": 10.4,
+         "logik": 11.8,
+         "weltbild": 9.5,
+         "hud": 26.9
+        }
+       ]
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    },
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 9,
+       "strips": 17,
+       "hits": 3867
+      }
+     },
+     "after": {
+      "x": 10677,
+      "y": 10101,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 10,
+       "strips": 27,
+       "hits": 4346
+      }
+     },
+     "trace": {
+      "frames": 332,
+      "seconds": 20.3,
+      "fps": 16.3,
+      "mainPerFrame": {
+       "n": 332,
+       "mean": 60.55,
+       "p50": 58.48,
+       "p95": 98.47,
+       "p99": 122.63,
+       "max": 207.58,
+       "over16": 327,
+       "over33": 308,
+       "over50": 224
+      },
+      "rafTask": {
+       "n": 332,
+       "mean": 56.2,
+       "p50": 53.46,
+       "p95": 90.05,
+       "p99": 120.77,
+       "max": 178.37,
+       "over16": 325,
+       "over33": 297,
+       "over50": 195
+      },
+      "interval": {
+       "n": 332,
+       "mean": 61,
+       "p50": 59.01,
+       "p95": 99.19,
+       "p99": 123.2,
+       "max": 209.87,
+       "over16": 328,
+       "over33": 308,
+       "over50": 226
+      },
+      "kindsMean": {
+       "script": 33.18,
+       "style": 3.71,
+       "layout": 0.98,
+       "paint": 17.49,
+       "gc": 0.26,
+       "idle": 0,
+       "input": 0.08,
+       "other": 4.84
+      },
+      "kindsP95": {
+       "script": 55.67,
+       "style": 10.99,
+       "layout": 2.81,
+       "paint": 41.53,
+       "gc": 0,
+       "idle": 0,
+       "input": 1.19,
+       "other": 14.11
+      },
+      "styleRecalcsPerFrame": 1.85,
+      "styleElementsPerFrame": 8.5,
+      "layoutsPerFrame": 0.52,
+      "forcedPerFrame": 0.94,
+      "longTasks": {
+       "count": 197,
+       "max": 178.4
+      },
+      "gc": {
+       "count": 159,
+       "totalMs": 86.3,
+       "maxMs": 54.5,
+       "perSecond": 7.8
+      },
+      "worstFrames": [
+       {
+        "ms": 207.6,
+        "kinds": {
+         "script": 167.3,
+         "style": 15.2,
+         "layout": 2.8,
+         "paint": 16.7,
+         "other": 5.6
+        }
+       },
+       {
+        "ms": 127.8,
+        "kinds": {
+         "script": 58.3,
+         "style": 12.5,
+         "layout": 4,
+         "paint": 48.7,
+         "other": 4.3
+        }
+       },
+       {
+        "ms": 126.6,
+        "kinds": {
+         "script": 41.2,
+         "style": 2.7,
+         "layout": 3.3,
+         "paint": 75.3,
+         "other": 4.1
+        }
+       },
+       {
+        "ms": 122.6,
+        "kinds": {
+         "script": 54.4,
+         "style": 7.9,
+         "layout": 3.6,
+         "paint": 51,
+         "input": 1.2,
+         "other": 4.6
+        }
+       },
+       {
+        "ms": 119.7,
+        "kinds": {
+         "script": 39.7,
+         "style": 12.3,
+         "layout": 2.6,
+         "paint": 50.6,
+         "input": 1.6,
+         "other": 12.9
+        }
+       },
+       {
+        "ms": 112.9,
+        "kinds": {
+         "script": 46.8,
+         "style": 5.8,
+         "layout": 2.2,
+         "paint": 46.7,
+         "other": 11.3
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 31.19
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 11.43
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.71
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.77
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.76
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.63
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.53
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.98
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.93
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.73
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.71
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.6
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.42
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.37
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.3
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 48
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.9
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.8
+       },
+       {
+        "thread": "DedicatedWorker thread",
+        "busyPct": 1.4
+       }
+      ],
+      "segments": {
+       "frames": 488,
+       "ms": {
+        "layout": {
+         "mean": 3.13,
+         "p95": 11.5,
+         "max": 18,
+         "n": 488
+        },
+        "vorlauf": {
+         "mean": 0.05,
+         "p95": 0.2,
+         "max": 2.9,
+         "n": 488
+        },
+        "logik": {
+         "mean": 8.45,
+         "p95": 17.3,
+         "max": 31.1,
+         "n": 488
+        },
+        "ereignisse": {
+         "mean": 0.1,
+         "p95": 0.4,
+         "max": 5.6,
+         "n": 488
+        },
+        "weltbild": {
+         "mean": 12.12,
+         "p95": 26.6,
+         "max": 117.4,
+         "n": 488
+        },
+        "schadenszahlen": {
+         "mean": 0.21,
+         "p95": 0.5,
+         "max": 2.4,
+         "n": 488
+        },
+        "hud": {
+         "mean": 5.28,
+         "p95": 16.3,
+         "max": 42.3,
+         "n": 488
+        },
+        "ressourcenleiste": {
+         "mean": 0.12,
+         "p95": 0.5,
+         "max": 4.8,
+         "n": 488
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.1,
+         "max": 4.6,
+         "n": 488
+        },
+        "rest": {
+         "mean": 0.57,
+         "p95": 2.2,
+         "max": 8,
+         "n": 488
+        }
+       },
+       "worst": [
+        {
+         "ms": 150.4,
+         "layout": 10.6,
+         "logik": 9.7,
+         "weltbild": 117.4,
+         "hud": 10.9,
+         "rest": 1.4
+        },
+        {
+         "ms": 68.6,
+         "layout": 11,
+         "logik": 20.3,
+         "weltbild": 18.9,
+         "hud": 16,
+         "rest": 1.9
+        },
+        {
+         "ms": 65.2,
+         "logik": 31.1,
+         "weltbild": 33.4
+        },
+        {
+         "ms": 64.7,
+         "layout": 2.6,
+         "logik": 14.7,
+         "weltbild": 34.4,
+         "hud": 12.3
+        },
+        {
+         "ms": 63.1,
+         "logik": 17.7,
+         "weltbild": 32.8,
+         "hud": 11.2,
+         "rest": 1.2
+        },
+        {
+         "ms": 62.8,
+         "layout": 5.7,
+         "logik": 6.5,
+         "weltbild": 50.3
+        },
+        {
+         "ms": 62.6,
+         "logik": 15.5,
+         "weltbild": 32.9,
+         "hud": 12.4
+        },
+        {
+         "ms": 62.2,
+         "layout": 2.4,
+         "logik": 13.8,
+         "weltbild": 35.2,
+         "hud": 10.3
+        }
+       ]
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "combat",
+   "session": "A",
+   "url": "http://localhost:4878/",
+   "merged": {
+    "frames": 500,
+    "seconds": 41.5,
+    "fps": 12,
+    "mainPerFrame": {
+     "n": 500,
+     "mean": 82.13,
+     "p50": 79.96,
+     "p95": 131.66,
+     "p99": 162.88,
+     "max": 171.69,
+     "over16": 496,
+     "over33": 481,
+     "over50": 450
+    },
+    "interval": {
+     "n": 500,
+     "mean": 82.54,
+     "p50": 80.3,
+     "p95": 132.02,
+     "p99": 162.95,
+     "max": 172.25,
+     "over16": 500,
+     "over33": 484,
+     "over50": 452
+    },
+    "kindsMean": {
+     "script": 41.45,
+     "style": 7.63,
+     "layout": 2,
+     "paint": 24.64,
+     "gc": 0.47,
+     "idle": 0,
+     "input": 0.59,
+     "other": 5.34
+    },
+    "kindsP95": {
+     "script": 64.83,
+     "style": 19.65,
+     "layout": 7.38,
+     "paint": 47.58,
+     "gc": 0,
+     "idle": 0,
+     "input": 4.12,
+     "other": 13.86
+    },
+    "longTasks": {
+     "count": 435,
+     "max": 169
+    },
+    "gc": {
+     "count": 87,
+     "totalMs": 490.9,
+     "maxMs": 58.8,
+     "perSecond": 2.1
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 10,
+       "strips": 33,
+       "hits": 4185
+      }
+     },
+     "after": {
+      "x": 9743,
+      "y": 9061,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 1586,
+      "chunks": 6,
+      "ground": {
+       "full": 12,
+       "strips": 33,
+       "hits": 4536
+      }
+     },
+     "trace": {
+      "frames": 243,
+      "seconds": 20.9,
+      "fps": 11.7,
+      "mainPerFrame": {
+       "n": 243,
+       "mean": 84.79,
+       "p50": 82.23,
+       "p95": 136.05,
+       "p99": 159.7,
+       "max": 171.69,
+       "over16": 240,
+       "over33": 231,
+       "over50": 223
+      },
+      "rafTask": {
+       "n": 243,
+       "mean": 80.42,
+       "p50": 79.66,
+       "p95": 128.88,
+       "p99": 149.3,
+       "max": 168.45,
+       "over16": 237,
+       "over33": 231,
+       "over50": 215
+      },
+      "interval": {
+       "n": 243,
+       "mean": 85.25,
+       "p50": 82.43,
+       "p95": 136.65,
+       "p99": 160.5,
+       "max": 172.25,
+       "over16": 243,
+       "over33": 232,
+       "over50": 223
+      },
+      "kindsMean": {
+       "script": 43.53,
+       "style": 7.96,
+       "layout": 2.26,
+       "paint": 24.82,
+       "gc": 0.4,
+       "idle": 0,
+       "input": 0.59,
+       "other": 5.22
+      },
+      "kindsP95": {
+       "script": 67.57,
+       "style": 19.65,
+       "layout": 7.93,
+       "paint": 49.98,
+       "gc": 0,
+       "idle": 0,
+       "input": 4.54,
+       "other": 13.31
+      },
+      "styleRecalcsPerFrame": 2.23,
+      "styleElementsPerFrame": 25.7,
+      "layoutsPerFrame": 0.86,
+      "forcedPerFrame": 1.44,
+      "longTasks": {
+       "count": 216,
+       "max": 168.5
+      },
+      "gc": {
+       "count": 49,
+       "totalMs": 268,
+       "maxMs": 58.8,
+       "perSecond": 2.3
+      },
+      "worstFrames": [
+       {
+        "ms": 171.7,
+        "kinds": {
+         "script": 63.6,
+         "style": 15.6,
+         "layout": 8.8,
+         "paint": 77.1,
+         "other": 6.6
+        }
+       },
+       {
+        "ms": 163.3,
+        "kinds": {
+         "script": 69.1,
+         "style": 14.8,
+         "layout": 14.2,
+         "paint": 56.6,
+         "other": 8.6
+        }
+       },
+       {
+        "ms": 159.7,
+        "kinds": {
+         "script": 79.4,
+         "style": 20.8,
+         "layout": 9.1,
+         "paint": 42.4,
+         "other": 7.9
+        }
+       },
+       {
+        "ms": 151.6,
+        "kinds": {
+         "script": 49.9,
+         "style": 16.7,
+         "layout": 14.3,
+         "paint": 62.6,
+         "other": 8.1
+        }
+       },
+       {
+        "ms": 151.2,
+        "kinds": {
+         "script": 71.9,
+         "style": 19.6,
+         "layout": 3,
+         "paint": 46.6,
+         "input": 1.6,
+         "other": 8.4
+        }
+       },
+       {
+        "ms": 145,
+        "kinds": {
+         "script": 64.7,
+         "style": 12.7,
+         "layout": 4,
+         "paint": 57.1,
+         "other": 6.5
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 42
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 15.27
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 7.96
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.57
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 2.39
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 2.26
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 2.1
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.96
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.7
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 1.28
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.75
+       },
+       {
+        "name": "HitTest",
+        "msPerFrame": 0.59
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.48
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.47
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.5
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 54.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 4.7
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 3.4
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.1
+       }
+      ],
+      "segments": {
+       "frames": 351,
+       "ms": {
+        "layout": {
+         "mean": 4.03,
+         "p95": 12.7,
+         "max": 22.8,
+         "n": 351
+        },
+        "vorlauf": {
+         "mean": 0.12,
+         "p95": 0.3,
+         "max": 3.6,
+         "n": 351
+        },
+        "logik": {
+         "mean": 7.78,
+         "p95": 17.9,
+         "max": 27.7,
+         "n": 351
+        },
+        "ereignisse": {
+         "mean": 0.25,
+         "p95": 1.1,
+         "max": 10,
+         "n": 351
+        },
+        "weltbild": {
+         "mean": 21.05,
+         "p95": 37.6,
+         "max": 103.8,
+         "n": 351
+        },
+        "schadenszahlen": {
+         "mean": 0.25,
+         "p95": 0.7,
+         "max": 6.1,
+         "n": 351
+        },
+        "hud": {
+         "mean": 7.61,
+         "p95": 19.1,
+         "max": 38.3,
+         "n": 351
+        },
+        "ressourcenleiste": {
+         "mean": 0.22,
+         "p95": 0.6,
+         "max": 5.5,
+         "n": 351
+        },
+        "karte": {
+         "mean": 0.03,
+         "p95": 0.2,
+         "max": 2.5,
+         "n": 351
+        },
+        "rest": {
+         "mean": 0.9,
+         "p95": 4.6,
+         "max": 15.4,
+         "n": 351
+        }
+       },
+       "worst": [
+        {
+         "ms": 123.2,
+         "layout": 4,
+         "logik": 3.6,
+         "weltbild": 103.8,
+         "hud": 11.2
+        },
+        {
+         "ms": 87.5,
+         "layout": 5.1,
+         "logik": 26.1,
+         "ereignisse": 2.6,
+         "weltbild": 30.8,
+         "hud": 20.7,
+         "rest": 1.6
+        },
+        {
+         "ms": 85.3,
+         "layout": 2,
+         "logik": 15,
+         "ereignisse": 1,
+         "weltbild": 36.9,
+         "hud": 27.3,
+         "rest": 1.8
+        },
+        {
+         "ms": 84.5,
+         "layout": 2.4,
+         "logik": 13.5,
+         "weltbild": 48.9,
+         "hud": 16.4,
+         "rest": 1.6
+        },
+        {
+         "ms": 81.5,
+         "layout": 2.3,
+         "logik": 13.7,
+         "weltbild": 43.3,
+         "hud": 19.1,
+         "rest": 2.6
+        },
+        {
+         "ms": 81.1,
+         "layout": 22.3,
+         "logik": 13.2,
+         "ereignisse": 1.8,
+         "weltbild": 25.9,
+         "hud": 17.6
+        },
+        {
+         "ms": 78,
+         "layout": 7.2,
+         "logik": 8.7,
+         "weltbild": 44,
+         "hud": 16.2
+        },
+        {
+         "ms": 77.5,
+         "layout": 3.8,
+         "logik": 8.5,
+         "weltbild": 36.7,
+         "hud": 19.5,
+         "rest": 7.9
+        }
+       ]
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 6,
+      "ground": {
+       "full": 10,
+       "strips": 34,
+       "hits": 4381
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 1410,
+      "chunks": 6,
+      "ground": {
+       "full": 12,
+       "strips": 34,
+       "hits": 4723
+      }
+     },
+     "trace": {
+      "frames": 257,
+      "seconds": 20.6,
+      "fps": 12.4,
+      "mainPerFrame": {
+       "n": 257,
+       "mean": 79.62,
+       "p50": 75.72,
+       "p95": 127.98,
+       "p99": 162.88,
+       "max": 170.39,
+       "over16": 256,
+       "over33": 250,
+       "over50": 227
+      },
+      "rafTask": {
+       "n": 257,
+       "mean": 75.49,
+       "p50": 71.89,
+       "p95": 124.21,
+       "p99": 157.18,
+       "max": 169.02,
+       "over16": 253,
+       "over33": 244,
+       "over50": 218
+      },
+      "interval": {
+       "n": 257,
+       "mean": 79.97,
+       "p50": 76,
+       "p95": 128.02,
+       "p99": 162.95,
+       "max": 170.43,
+       "over16": 257,
+       "over33": 252,
+       "over50": 229
+      },
+      "kindsMean": {
+       "script": 39.48,
+       "style": 7.33,
+       "layout": 1.76,
+       "paint": 24.46,
+       "gc": 0.55,
+       "idle": 0,
+       "input": 0.59,
+       "other": 5.45
+      },
+      "kindsP95": {
+       "script": 61.34,
+       "style": 19.07,
+       "layout": 6.38,
+       "paint": 46.24,
+       "gc": 0,
+       "idle": 0,
+       "input": 3.8,
+       "other": 14.08
+      },
+      "styleRecalcsPerFrame": 2.12,
+      "styleElementsPerFrame": 24,
+      "layoutsPerFrame": 0.8,
+      "forcedPerFrame": 1.35,
+      "longTasks": {
+       "count": 219,
+       "max": 169
+      },
+      "gc": {
+       "count": 38,
+       "totalMs": 222.9,
+       "maxMs": 43.6,
+       "perSecond": 1.8
+      },
+      "worstFrames": [
+       {
+        "ms": 170.4,
+        "kinds": {
+         "script": 88.3,
+         "style": 24.8,
+         "layout": 3.8,
+         "paint": 48.9,
+         "other": 4.6
+        }
+       },
+       {
+        "ms": 164,
+        "kinds": {
+         "script": 64.6,
+         "style": 6.6,
+         "layout": 0.7,
+         "paint": 37.7,
+         "gc": 50.5,
+         "other": 3.8
+        }
+       },
+       {
+        "ms": 162.9,
+        "kinds": {
+         "script": 51.9,
+         "style": 21,
+         "layout": 2.8,
+         "paint": 28.6,
+         "gc": 49.5,
+         "other": 9
+        }
+       },
+       {
+        "ms": 158.6,
+        "kinds": {
+         "script": 63.6,
+         "style": 20.3,
+         "layout": 7.6,
+         "paint": 54.2,
+         "input": 2,
+         "other": 10.9
+        }
+       },
+       {
+        "ms": 155.2,
+        "kinds": {
+         "script": 56.9,
+         "style": 17.6,
+         "layout": 2.8,
+         "paint": 46.2,
+         "input": 1.3,
+         "other": 30.3
+        }
+       },
+       {
+        "ms": 147,
+        "kinds": {
+         "script": 55,
+         "style": 22,
+         "layout": 2.8,
+         "paint": 38.8,
+         "input": 3.2,
+         "other": 25.1
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 37.94
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 15.23
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 7.33
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.49
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 2.38
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 2.24
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.78
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.76
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.7
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 1.17
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.74
+       },
+       {
+        "name": "HitTest",
+        "msPerFrame": 0.59
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.53
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.51
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 54.5
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 4.8
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 3.5
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.1
+       }
+      ],
+      "segments": {
+       "frames": 342,
+       "ms": {
+        "layout": {
+         "mean": 3.86,
+         "p95": 12.4,
+         "max": 27.9,
+         "n": 342
+        },
+        "vorlauf": {
+         "mean": 0.03,
+         "p95": 0.2,
+         "max": 0.6,
+         "n": 342
+        },
+        "logik": {
+         "mean": 7.11,
+         "p95": 16.6,
+         "max": 37.7,
+         "n": 342
+        },
+        "ereignisse": {
+         "mean": 0.17,
+         "p95": 0.9,
+         "max": 12.9,
+         "n": 342
+        },
+        "weltbild": {
+         "mean": 22.07,
+         "p95": 47.8,
+         "max": 72.7,
+         "n": 342
+        },
+        "schadenszahlen": {
+         "mean": 0.27,
+         "p95": 0.8,
+         "max": 5.4,
+         "n": 342
+        },
+        "hud": {
+         "mean": 8.34,
+         "p95": 24.5,
+         "max": 44.6,
+         "n": 342
+        },
+        "ressourcenleiste": {
+         "mean": 0.38,
+         "p95": 0.7,
+         "max": 5,
+         "n": 342
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.2,
+         "max": 1.2,
+         "n": 342
+        },
+        "rest": {
+         "mean": 0.58,
+         "p95": 2.1,
+         "max": 9.2,
+         "n": 342
+        }
+       },
+       "worst": [
+        {
+         "ms": 139.8,
+         "layout": 27.9,
+         "logik": 14.5,
+         "weltbild": 61,
+         "hud": 26.1,
+         "rest": 9.2
+        },
+        {
+         "ms": 116.9,
+         "layout": 2,
+         "logik": 6.8,
+         "ereignisse": 5.9,
+         "weltbild": 64.8,
+         "hud": 36.2
+        },
+        {
+         "ms": 115.7,
+         "layout": 1.4,
+         "logik": 16.1,
+         "ereignisse": 1.4,
+         "weltbild": 63,
+         "hud": 26.9,
+         "rest": 5.7
+        },
+        {
+         "ms": 115.3,
+         "layout": 10.4,
+         "logik": 7.8,
+         "weltbild": 72.7,
+         "schadenszahlen": 1.4,
+         "hud": 20.6,
+         "rest": 1.9
+        },
+        {
+         "ms": 114.5,
+         "layout": 21.7,
+         "logik": 13.4,
+         "weltbild": 62.4,
+         "hud": 14.2,
+         "rest": 1.7
+        },
+        {
+         "ms": 114.4,
+         "layout": 2,
+         "logik": 37.7,
+         "weltbild": 39.4,
+         "hud": 34
+        },
+        {
+         "ms": 104.3,
+         "logik": 16.9,
+         "weltbild": 49.2,
+         "hud": 37.1
+        },
+        {
+         "ms": 98.5,
+         "weltbild": 63.9,
+         "hud": 32.4
+        }
+       ]
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 4,
+   "scene": "idle",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 1331,
+    "seconds": 40,
+    "fps": 33.3,
+    "mainPerFrame": {
+     "n": 1331,
+     "mean": 28.84,
+     "p50": 27.82,
+     "p95": 55.09,
+     "p99": 71.17,
+     "max": 115.85,
+     "over16": 1010,
+     "over33": 463,
+     "over50": 116
+    },
+    "interval": {
+     "n": 1331,
+     "mean": 30.02,
+     "p50": 27.96,
+     "p95": 55.4,
+     "p99": 71.35,
+     "max": 118.56,
+     "over16": 1120,
+     "over33": 468,
+     "over50": 119
+    },
+    "kindsMean": {
+     "script": 20.1,
+     "style": 0.25,
+     "layout": 0.25,
+     "paint": 6.56,
+     "gc": 0.23,
+     "idle": 0.01,
+     "input": 0.02,
+     "other": 1.42
+    },
+    "kindsP95": {
+     "script": 41.15,
+     "style": 1.38,
+     "layout": 1.2,
+     "paint": 14.54,
+     "gc": 0,
+     "idle": 0.02,
+     "input": 0,
+     "other": 5.36
+    },
+    "longTasks": {
+     "count": 87,
+     "max": 114.6
+    },
+    "gc": {
+     "count": 297,
+     "totalMs": 442.3,
+     "maxMs": 63.6,
+     "perSecond": 7.4
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 2,
+       "strips": 1,
+       "hits": 292
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 963
+      }
+     },
+     "trace": {
+      "frames": 490,
+      "seconds": 20,
+      "fps": 24.5,
+      "mainPerFrame": {
+       "n": 490,
+       "mean": 40.49,
+       "p50": 39.61,
+       "p95": 64.2,
+       "p99": 80.72,
+       "max": 115.85,
+       "over16": 469,
+       "over33": 348,
+       "over50": 104
+      },
+      "rafTask": {
+       "n": 490,
+       "mean": 38.73,
+       "p50": 38.48,
+       "p95": 60.58,
+       "p99": 78.04,
+       "max": 114.58,
+       "over16": 464,
+       "over33": 329,
+       "over50": 77
+      },
+      "interval": {
+       "n": 490,
+       "mean": 40.81,
+       "p50": 39.77,
+       "p95": 64.23,
+       "p99": 80.75,
+       "max": 118.56,
+       "over16": 473,
+       "over33": 352,
+       "over50": 107
+      },
+      "kindsMean": {
+       "script": 29.36,
+       "style": 0.42,
+       "layout": 0.37,
+       "paint": 7.96,
+       "gc": 0.28,
+       "idle": 0.01,
+       "input": 0.03,
+       "other": 2.06
+      },
+      "kindsP95": {
+       "script": 47.77,
+       "style": 1.6,
+       "layout": 1.22,
+       "paint": 14.28,
+       "gc": 0,
+       "idle": 0.16,
+       "input": 0,
+       "other": 7.89
+      },
+      "styleRecalcsPerFrame": 0.33,
+      "styleElementsPerFrame": 1.7,
+      "layoutsPerFrame": 0.33,
+      "forcedPerFrame": 0.02,
+      "longTasks": {
+       "count": 77,
+       "max": 114.6
+      },
+      "gc": {
+       "count": 78,
+       "totalMs": 205.2,
+       "maxMs": 49.8,
+       "perSecond": 3.9
+      },
+      "worstFrames": [
+       {
+        "ms": 115.9,
+        "kinds": {
+         "script": 47.8,
+         "style": 1.8,
+         "layout": 1.2,
+         "paint": 13.6,
+         "gc": 50,
+         "other": 1.4
+        }
+       },
+       {
+        "ms": 113.2,
+        "kinds": {
+         "script": 47,
+         "style": 2,
+         "layout": 1.9,
+         "paint": 7.9,
+         "other": 54.4
+        }
+       },
+       {
+        "ms": 83.9,
+        "kinds": {
+         "script": 72.3,
+         "paint": 10,
+         "input": 0.6,
+         "other": 1
+        }
+       },
+       {
+        "ms": 83.6,
+        "kinds": {
+         "script": 77.4,
+         "paint": 5.2,
+         "other": 1
+        }
+       },
+       {
+        "ms": 80.7,
+        "kinds": {
+         "script": 67.5,
+         "layout": 0.8,
+         "paint": 10.7,
+         "other": 1.3
+        }
+       },
+       {
+        "ms": 78.3,
+        "kinds": {
+         "script": 69.8,
+         "layout": 0.8,
+         "paint": 6.2,
+         "other": 1
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 28.52
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 5.42
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.48
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.99
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.57
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.42
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.37
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.35
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.34
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.28
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.28
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.23
+       },
+       {
+        "name": "TimerFire",
+        "msPerFrame": 0.17
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.17
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.2
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 60.3
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.8
+       }
+      ],
+      "segments": {
+       "frames": 670,
+       "ms": {
+        "layout": {
+         "mean": 0.81,
+         "p95": 3.3,
+         "max": 22,
+         "n": 670
+        },
+        "vorlauf": {
+         "mean": 0.09,
+         "p95": 0.2,
+         "max": 14.1,
+         "n": 670
+        },
+        "logik": {
+         "mean": 5.93,
+         "p95": 17.2,
+         "max": 52.8,
+         "n": 670
+        },
+        "ereignisse": {
+         "mean": 0.09,
+         "p95": 0.2,
+         "max": 12.4,
+         "n": 670
+        },
+        "weltbild": {
+         "mean": 17.84,
+         "p95": 32.7,
+         "max": 57.5,
+         "n": 670
+        },
+        "schadenszahlen": {
+         "mean": 0.08,
+         "p95": 0.2,
+         "max": 3.6,
+         "n": 670
+        },
+        "hud": {
+         "mean": 2.78,
+         "p95": 11.4,
+         "max": 29.4,
+         "n": 670
+        },
+        "ressourcenleiste": {
+         "mean": 0.09,
+         "p95": 0.3,
+         "max": 7.1,
+         "n": 670
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.1,
+         "max": 3.2,
+         "n": 670
+        },
+        "rest": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 3.6,
+         "n": 670
+        }
+       }
+      },
+      "extra": {}
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 2,
+       "strips": 1,
+       "hits": 309
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 1518
+      }
+     },
+     "trace": {
+      "frames": 841,
+      "seconds": 20,
+      "fps": 42,
+      "mainPerFrame": {
+       "n": 841,
+       "mean": 22.05,
+       "p50": 20.99,
+       "p95": 41.06,
+       "p99": 51.58,
+       "max": 85.04,
+       "over16": 541,
+       "over33": 115,
+       "over50": 12
+      },
+      "rafTask": {
+       "n": 841,
+       "mean": 21.12,
+       "p50": 20.2,
+       "p95": 39.73,
+       "p99": 51.01,
+       "max": 84.07,
+       "over16": 518,
+       "over33": 97,
+       "over50": 10
+      },
+      "interval": {
+       "n": 841,
+       "mean": 23.73,
+       "p50": 21.63,
+       "p95": 41.34,
+       "p99": 51.62,
+       "max": 85.68,
+       "over16": 648,
+       "over33": 116,
+       "over50": 12
+      },
+      "kindsMean": {
+       "script": 14.7,
+       "style": 0.14,
+       "layout": 0.18,
+       "paint": 5.75,
+       "gc": 0.2,
+       "idle": 0.01,
+       "input": 0.01,
+       "other": 1.05
+      },
+      "kindsP95": {
+       "script": 30.03,
+       "style": 1.03,
+       "layout": 1,
+       "paint": 14.65,
+       "gc": 0,
+       "idle": 0.02,
+       "input": 0,
+       "other": 3.44
+      },
+      "styleRecalcsPerFrame": 0.2,
+      "styleElementsPerFrame": 1,
+      "layoutsPerFrame": 0.2,
+      "forcedPerFrame": 0,
+      "longTasks": {
+       "count": 10,
+       "max": 84.1
+      },
+      "gc": {
+       "count": 219,
+       "totalMs": 237.1,
+       "maxMs": 63.6,
+       "perSecond": 10.9
+      },
+      "worstFrames": [
+       {
+        "ms": 85,
+        "kinds": {
+         "script": 11.1,
+         "paint": 9.2,
+         "gc": 63.7,
+         "other": 1
+        }
+       },
+       {
+        "ms": 73.1,
+        "kinds": {
+         "script": 24.8,
+         "paint": 6.2,
+         "other": 42.1
+        }
+       },
+       {
+        "ms": 57.6,
+        "kinds": {
+         "script": 53.2,
+         "paint": 3.6,
+         "other": 0.8
+        }
+       },
+       {
+        "ms": 56.3,
+        "kinds": {
+         "script": 43.4,
+         "style": 1.2,
+         "layout": 0.8,
+         "paint": 9.9,
+         "other": 1
+        }
+       },
+       {
+        "ms": 54.6,
+        "kinds": {
+         "script": 40.9,
+         "style": 1.4,
+         "layout": 1,
+         "paint": 9.8,
+         "other": 1.4
+        }
+       },
+       {
+        "ms": 53.5,
+        "kinds": {
+         "script": 43.9,
+         "layout": 1,
+         "paint": 7,
+         "other": 1.2
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 14.25
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 3.8
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.07
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 0.46
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.34
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.26
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.24
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.18
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame::commit",
+        "msPerFrame": 0.18
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.18
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.16
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.14
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.14
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.08
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 92.9
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 87
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.3
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 3
+       }
+      ],
+      "segments": {
+       "frames": 1209,
+       "ms": {
+        "layout": {
+         "mean": 0.31,
+         "p95": 1.2,
+         "max": 14.1,
+         "n": 1209
+        },
+        "vorlauf": {
+         "mean": 0.02,
+         "p95": 0.2,
+         "max": 2,
+         "n": 1209
+        },
+        "logik": {
+         "mean": 2.49,
+         "p95": 7.4,
+         "max": 65.6,
+         "n": 1209
+        },
+        "ereignisse": {
+         "mean": 0.03,
+         "p95": 0.1,
+         "max": 6.2,
+         "n": 1209
+        },
+        "weltbild": {
+         "mean": 9.94,
+         "p95": 22.2,
+         "max": 49.8,
+         "n": 1209
+        },
+        "schadenszahlen": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 4.1,
+         "n": 1209
+        },
+        "hud": {
+         "mean": 1.17,
+         "p95": 7.6,
+         "max": 21.9,
+         "n": 1209
+        },
+        "ressourcenleiste": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 7.1,
+         "n": 1209
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 4.4,
+         "n": 1209
+        },
+        "rest": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 3.2,
+         "n": 1209
+        }
+       }
+      },
+      "extra": {}
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 4,
+   "scene": "walk",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 641,
+    "seconds": 41.1,
+    "fps": 15.6,
+    "mainPerFrame": {
+     "n": 641,
+     "mean": 62.34,
+     "p50": 56.92,
+     "p95": 116.14,
+     "p99": 175.93,
+     "max": 281.99,
+     "over16": 631,
+     "over33": 581,
+     "over50": 406
+    },
+    "interval": {
+     "n": 641,
+     "mean": 63.82,
+     "p50": 58.13,
+     "p95": 117.99,
+     "p99": 179.24,
+     "max": 283.4,
+     "over16": 631,
+     "over33": 586,
+     "over50": 421
+    },
+    "kindsMean": {
+     "script": 44.63,
+     "style": 2.43,
+     "layout": 0.87,
+     "paint": 10.25,
+     "gc": 0.68,
+     "idle": 0.01,
+     "input": 0.05,
+     "other": 3.44
+    },
+    "kindsP95": {
+     "script": 85.16,
+     "style": 8.3,
+     "layout": 3.61,
+     "paint": 24.03,
+     "gc": 0,
+     "idle": 0.03,
+     "input": 0.42,
+     "other": 11.28
+    },
+    "longTasks": {
+     "count": 374,
+     "max": 279.1
+    },
+    "gc": {
+     "count": 185,
+     "totalMs": 658.1,
+     "maxMs": 60.9,
+     "perSecond": 4.5
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 1052
+      }
+     },
+     "after": {
+      "x": 10543,
+      "y": 9956,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 5,
+       "strips": 9,
+       "hits": 1479
+      }
+     },
+     "trace": {
+      "frames": 279,
+      "seconds": 20.8,
+      "fps": 13.4,
+      "mainPerFrame": {
+       "n": 279,
+       "mean": 72.49,
+       "p50": 67.2,
+       "p95": 138.12,
+       "p99": 186.12,
+       "max": 281.99,
+       "over16": 274,
+       "over33": 257,
+       "over50": 215
+      },
+      "rafTask": {
+       "n": 279,
+       "mean": 69.27,
+       "p50": 64.27,
+       "p95": 133.95,
+       "p99": 180.78,
+       "max": 279.08,
+       "over16": 271,
+       "over33": 254,
+       "over50": 205
+      },
+      "interval": {
+       "n": 279,
+       "mean": 74.18,
+       "p50": 68.28,
+       "p95": 143.23,
+       "p99": 191.53,
+       "max": 283.4,
+       "over16": 274,
+       "over33": 260,
+       "over50": 223
+      },
+      "kindsMean": {
+       "script": 51.65,
+       "style": 2.8,
+       "layout": 1.07,
+       "paint": 11.99,
+       "gc": 0.76,
+       "idle": 0.01,
+       "input": 0.06,
+       "other": 4.15
+      },
+      "kindsP95": {
+       "script": 96.6,
+       "style": 10.71,
+       "layout": 5.85,
+       "paint": 31.14,
+       "gc": 0,
+       "idle": 0.17,
+       "input": 0.62,
+       "other": 14.76
+      },
+      "styleRecalcsPerFrame": 1.73,
+      "styleElementsPerFrame": 8.6,
+      "layoutsPerFrame": 0.59,
+      "forcedPerFrame": 0.91,
+      "longTasks": {
+       "count": 206,
+       "max": 279.1
+      },
+      "gc": {
+       "count": 83,
+       "totalMs": 349.2,
+       "maxMs": 60.9,
+       "perSecond": 4
+      },
+      "worstFrames": [
+       {
+        "ms": 282,
+        "kinds": {
+         "script": 220.4,
+         "style": 13.4,
+         "layout": 11.4,
+         "paint": 31.8,
+         "other": 5
+        }
+       },
+       {
+        "ms": 231.4,
+        "kinds": {
+         "script": 188.8,
+         "style": 1.8,
+         "layout": 0.8,
+         "paint": 29.6,
+         "other": 10.4
+        }
+       },
+       {
+        "ms": 186.1,
+        "kinds": {
+         "script": 137.6,
+         "style": 3.2,
+         "layout": 0.6,
+         "paint": 19.1,
+         "other": 25.6
+        }
+       },
+       {
+        "ms": 181.6,
+        "kinds": {
+         "script": 101.4,
+         "style": 4.4,
+         "layout": 5.8,
+         "paint": 48.4,
+         "input": 0.8,
+         "other": 20.7
+        }
+       },
+       {
+        "ms": 177.4,
+        "kinds": {
+         "script": 164,
+         "paint": 11.9,
+         "other": 1.6
+        }
+       },
+       {
+        "ms": 175.7,
+        "kinds": {
+         "script": 96.6,
+         "style": 4.5,
+         "layout": 2.2,
+         "paint": 8.3,
+         "gc": 61.3,
+         "other": 2.8
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 47.38
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 6.96
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.79
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.44
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.59
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.51
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.24
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.07
+       },
+       {
+        "name": "Decode Image",
+        "msPerFrame": 0.91
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.81
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.62
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.56
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.38
+       },
+       {
+        "name": "CommandBufferProxyImpl::Flush",
+        "msPerFrame": 0.37
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 97.7
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 62.9
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.8
+       }
+      ],
+      "segments": {
+       "frames": 435,
+       "ms": {
+        "layout": {
+         "mean": 2.67,
+         "p95": 12.7,
+         "max": 21,
+         "n": 435
+        },
+        "vorlauf": {
+         "mean": 0.1,
+         "p95": 0.2,
+         "max": 9.4,
+         "n": 435
+        },
+        "logik": {
+         "mean": 8.37,
+         "p95": 23,
+         "max": 75.6,
+         "n": 435
+        },
+        "ereignisse": {
+         "mean": 0.3,
+         "p95": 0.7,
+         "max": 17.9,
+         "n": 435
+        },
+        "weltbild": {
+         "mean": 23.41,
+         "p95": 61.3,
+         "max": 162.4,
+         "n": 435
+        },
+        "schadenszahlen": {
+         "mean": 0.25,
+         "p95": 0.5,
+         "max": 10,
+         "n": 435
+        },
+        "hud": {
+         "mean": 5.96,
+         "p95": 20,
+         "max": 53.3,
+         "n": 435
+        },
+        "ressourcenleiste": {
+         "mean": 0.25,
+         "p95": 0.7,
+         "max": 7.3,
+         "n": 435
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.1,
+         "max": 1.4,
+         "n": 435
+        },
+        "rest": {
+         "mean": 5.54,
+         "p95": 18.7,
+         "max": 56.1,
+         "n": 435
+        }
+       }
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    },
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 2,
+      "ground": {
+       "full": 3,
+       "strips": 1,
+       "hits": 1632
+      }
+     },
+     "after": {
+      "x": 10724,
+      "y": 10152,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 5,
+       "strips": 12,
+       "hits": 2232
+      }
+     },
+     "trace": {
+      "frames": 362,
+      "seconds": 20.3,
+      "fps": 17.9,
+      "mainPerFrame": {
+       "n": 362,
+       "mean": 54.52,
+       "p50": 50.81,
+       "p95": 98.56,
+       "p99": 128.28,
+       "max": 178.13,
+       "over16": 357,
+       "over33": 324,
+       "over50": 191
+      },
+      "rafTask": {
+       "n": 362,
+       "mean": 52.19,
+       "p50": 49.26,
+       "p95": 94.44,
+       "p99": 127.84,
+       "max": 175.52,
+       "over16": 354,
+       "over33": 317,
+       "over50": 167
+      },
+      "interval": {
+       "n": 362,
+       "mean": 55.83,
+       "p50": 51.32,
+       "p95": 101.38,
+       "p99": 171.98,
+       "max": 193.24,
+       "over16": 357,
+       "over33": 326,
+       "over50": 198
+      },
+      "kindsMean": {
+       "script": 39.21,
+       "style": 2.14,
+       "layout": 0.72,
+       "paint": 8.9,
+       "gc": 0.61,
+       "idle": 0.01,
+       "input": 0.04,
+       "other": 2.88
+      },
+      "kindsP95": {
+       "script": 67.8,
+       "style": 6.07,
+       "layout": 2.21,
+       "paint": 18.95,
+       "gc": 0,
+       "idle": 0.02,
+       "input": 0.41,
+       "other": 9.22
+      },
+      "styleRecalcsPerFrame": 1.83,
+      "styleElementsPerFrame": 8.4,
+      "layoutsPerFrame": 0.49,
+      "forcedPerFrame": 0.96,
+      "longTasks": {
+       "count": 168,
+       "max": 175.5
+      },
+      "gc": {
+       "count": 102,
+       "totalMs": 308.8,
+       "maxMs": 38,
+       "perSecond": 5
+      },
+      "worstFrames": [
+       {
+        "ms": 178.1,
+        "kinds": {
+         "script": 134.1,
+         "style": 7.7,
+         "layout": 1.4,
+         "paint": 19.2,
+         "gc": 7.9,
+         "other": 7.8
+        }
+       },
+       {
+        "ms": 175.9,
+        "kinds": {
+         "script": 154.8,
+         "style": 1.9,
+         "layout": 1.7,
+         "paint": 12.9,
+         "other": 4.7
+        }
+       },
+       {
+        "ms": 171.8,
+        "kinds": {
+         "script": 127.1,
+         "style": 4.5,
+         "layout": 9,
+         "paint": 17.3,
+         "other": 13.9
+        }
+       },
+       {
+        "ms": 128.3,
+        "kinds": {
+         "script": 45.4,
+         "style": 13.5,
+         "layout": 1.2,
+         "paint": 21.3,
+         "gc": 43.7,
+         "other": 3.2
+        }
+       },
+       {
+        "ms": 125.4,
+        "kinds": {
+         "script": 100.3,
+         "style": 4.4,
+         "layout": 1.2,
+         "paint": 14.8,
+         "input": 0.6,
+         "other": 3.9
+        }
+       },
+       {
+        "ms": 117.2,
+        "kinds": {
+         "script": 100.9,
+         "paint": 9.1,
+         "other": 7.3
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 36.34
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 5.1
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 2.14
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.74
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.17
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.11
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.02
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.72
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.62
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.46
+       },
+       {
+        "name": "Decode Image",
+        "msPerFrame": 0.45
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.34
+       },
+       {
+        "name": "CommandBufferProxyImpl::Flush",
+        "msPerFrame": 0.28
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.27
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 97.7
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 67.5
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.4
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.5
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.1
+       }
+      ],
+      "segments": {
+       "frames": 611,
+       "ms": {
+        "layout": {
+         "mean": 1.59,
+         "p95": 6.1,
+         "max": 22.9,
+         "n": 611
+        },
+        "vorlauf": {
+         "mean": 0.05,
+         "p95": 0.2,
+         "max": 3.5,
+         "n": 611
+        },
+        "logik": {
+         "mean": 5.88,
+         "p95": 13.7,
+         "max": 41.8,
+         "n": 611
+        },
+        "ereignisse": {
+         "mean": 0.14,
+         "p95": 0.4,
+         "max": 8.1,
+         "n": 611
+        },
+        "weltbild": {
+         "mean": 15.85,
+         "p95": 41.9,
+         "max": 104.6,
+         "n": 611
+        },
+        "schadenszahlen": {
+         "mean": 0.21,
+         "p95": 0.6,
+         "max": 5.8,
+         "n": 611
+        },
+        "hud": {
+         "mean": 3.78,
+         "p95": 16.6,
+         "max": 31.9,
+         "n": 611
+        },
+        "ressourcenleiste": {
+         "mean": 0.21,
+         "p95": 0.6,
+         "max": 4.3,
+         "n": 611
+        },
+        "karte": {
+         "mean": 0.03,
+         "p95": 0.1,
+         "max": 6.3,
+         "n": 611
+        },
+        "rest": {
+         "mean": 4.53,
+         "p95": 15.7,
+         "max": 39.2,
+         "n": 611
+        }
+       }
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 4,
+   "scene": "combat",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 648,
+    "seconds": 40.8,
+    "fps": 15.9,
+    "mainPerFrame": {
+     "n": 648,
+     "mean": 62.35,
+     "p50": 59.23,
+     "p95": 110.77,
+     "p99": 140.39,
+     "max": 155.31,
+     "over16": 642,
+     "over33": 593,
+     "over50": 447
+    },
+    "interval": {
+     "n": 648,
+     "mean": 62.81,
+     "p50": 59.48,
+     "p95": 110.98,
+     "p99": 141.01,
+     "max": 155.91,
+     "over16": 642,
+     "over33": 598,
+     "over50": 452
+    },
+    "kindsMean": {
+     "script": 35.58,
+     "style": 4.44,
+     "layout": 1.35,
+     "paint": 16.69,
+     "gc": 0.47,
+     "idle": 0.02,
+     "input": 0.25,
+     "other": 3.54
+    },
+    "kindsP95": {
+     "script": 64.82,
+     "style": 13.85,
+     "layout": 5.76,
+     "paint": 37.56,
+     "gc": 0,
+     "idle": 0.17,
+     "input": 1.18,
+     "other": 12.47
+    },
+    "longTasks": {
+     "count": 410,
+     "max": 151.2
+    },
+    "gc": {
+     "count": 277,
+     "totalMs": 446.1,
+     "maxMs": 42.7,
+     "perSecond": 6.8
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 5,
+       "strips": 15,
+       "hits": 1513
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 1180,
+      "chunks": 4,
+      "ground": {
+       "full": 7,
+       "strips": 15,
+       "hits": 1907
+      }
+     },
+     "trace": {
+      "frames": 267,
+      "seconds": 20.4,
+      "fps": 13.1,
+      "mainPerFrame": {
+       "n": 267,
+       "mean": 75.23,
+       "p50": 73.59,
+       "p95": 127.46,
+       "p99": 151.8,
+       "max": 155.31,
+       "over16": 266,
+       "over33": 254,
+       "over50": 222
+      },
+      "rafTask": {
+       "n": 267,
+       "mean": 71.33,
+       "p50": 69.86,
+       "p95": 118.54,
+       "p99": 140.58,
+       "max": 151.15,
+       "over16": 265,
+       "over33": 252,
+       "over50": 212
+      },
+      "interval": {
+       "n": 267,
+       "mean": 75.98,
+       "p50": 73.82,
+       "p95": 127.49,
+       "p99": 151.84,
+       "max": 155.91,
+       "over16": 266,
+       "over33": 257,
+       "over50": 223
+      },
+      "kindsMean": {
+       "script": 42.08,
+       "style": 5.48,
+       "layout": 1.66,
+       "paint": 20.58,
+       "gc": 0.51,
+       "idle": 0.02,
+       "input": 0.34,
+       "other": 4.56
+      },
+      "kindsP95": {
+       "script": 74.2,
+       "style": 16.97,
+       "layout": 6.62,
+       "paint": 50.67,
+       "gc": 0,
+       "idle": 0.17,
+       "input": 1.19,
+       "other": 14.38
+      },
+      "styleRecalcsPerFrame": 2.09,
+      "styleElementsPerFrame": 22.2,
+      "layoutsPerFrame": 0.77,
+      "forcedPerFrame": 1.35,
+      "longTasks": {
+       "count": 213,
+       "max": 151.2
+      },
+      "gc": {
+       "count": 72,
+       "totalMs": 199.4,
+       "maxMs": 42.7,
+       "perSecond": 3.5
+      },
+      "worstFrames": [
+       {
+        "ms": 155.3,
+        "kinds": {
+         "script": 65.4,
+         "style": 19.6,
+         "layout": 1.8,
+         "paint": 57.4,
+         "other": 11.1
+        }
+       },
+       {
+        "ms": 154.4,
+        "kinds": {
+         "script": 108.3,
+         "style": 16.8,
+         "layout": 1.4,
+         "paint": 11.5,
+         "other": 16.4
+        }
+       },
+       {
+        "ms": 151.8,
+        "kinds": {
+         "script": 78.4,
+         "style": 18.4,
+         "layout": 2.2,
+         "paint": 50.6,
+         "other": 2.2
+        }
+       },
+       {
+        "ms": 146,
+        "kinds": {
+         "script": 66.7,
+         "style": 9.9,
+         "layout": 5.2,
+         "paint": 56.6,
+         "other": 7.6
+        }
+       },
+       {
+        "ms": 141,
+        "kinds": {
+         "script": 55,
+         "style": 13.2,
+         "layout": 2,
+         "paint": 56.9,
+         "other": 13.9
+        }
+       },
+       {
+        "ms": 140.8,
+        "kinds": {
+         "script": 109.7,
+         "style": 8.8,
+         "layout": 1.4,
+         "paint": 16.2,
+         "other": 4.8
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 40.86
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 13.22
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 5.48
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.25
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.78
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.66
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.62
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.6
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.16
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 1.09
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.64
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.48
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.44
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.41
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 63.9
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 4.8
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 4
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.6
+       }
+      ],
+      "segments": {
+       "frames": 394,
+       "ms": {
+        "layout": {
+         "mean": 3.2,
+         "p95": 13.8,
+         "max": 38.1,
+         "n": 394
+        },
+        "vorlauf": {
+         "mean": 0.05,
+         "p95": 0.2,
+         "max": 2.7,
+         "n": 394
+        },
+        "logik": {
+         "mean": 7.92,
+         "p95": 22.3,
+         "max": 57.7,
+         "n": 394
+        },
+        "ereignisse": {
+         "mean": 0.26,
+         "p95": 0.8,
+         "max": 12.1,
+         "n": 394
+        },
+        "weltbild": {
+         "mean": 22.6,
+         "p95": 47.9,
+         "max": 88.2,
+         "n": 394
+        },
+        "schadenszahlen": {
+         "mean": 0.28,
+         "p95": 0.5,
+         "max": 17.1,
+         "n": 394
+        },
+        "hud": {
+         "mean": 7.03,
+         "p95": 24.6,
+         "max": 45.2,
+         "n": 394
+        },
+        "ressourcenleiste": {
+         "mean": 0.43,
+         "p95": 1.5,
+         "max": 5.6,
+         "n": 394
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.1,
+         "max": 1.1,
+         "n": 394
+        },
+        "rest": {
+         "mean": 0.09,
+         "p95": 0.2,
+         "max": 5.2,
+         "n": 394
+        }
+       }
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 5,
+       "strips": 19,
+       "hits": 2271
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 2031,
+      "chunks": 4,
+      "ground": {
+       "full": 7,
+       "strips": 19,
+       "hits": 2833
+      }
+     },
+     "trace": {
+      "frames": 381,
+      "seconds": 20.5,
+      "fps": 18.6,
+      "mainPerFrame": {
+       "n": 381,
+       "mean": 53.32,
+       "p50": 52.13,
+       "p95": 80.56,
+       "p99": 99.08,
+       "max": 117.08,
+       "over16": 376,
+       "over33": 339,
+       "over50": 225
+      },
+      "rafTask": {
+       "n": 381,
+       "mean": 50.94,
+       "p50": 50.38,
+       "p95": 77.02,
+       "p99": 97.26,
+       "max": 116.86,
+       "over16": 370,
+       "over33": 332,
+       "over50": 197
+      },
+      "interval": {
+       "n": 381,
+       "mean": 53.58,
+       "p50": 52.23,
+       "p95": 80.73,
+       "p99": 99.11,
+       "max": 117.26,
+       "over16": 376,
+       "over33": 341,
+       "over50": 230
+      },
+      "kindsMean": {
+       "script": 31.03,
+       "style": 3.72,
+       "layout": 1.14,
+       "paint": 13.97,
+       "gc": 0.44,
+       "idle": 0.01,
+       "input": 0.19,
+       "other": 2.83
+      },
+      "kindsP95": {
+       "script": 51.73,
+       "style": 11.15,
+       "layout": 5.05,
+       "paint": 24.17,
+       "gc": 0,
+       "idle": 0.16,
+       "input": 1.07,
+       "other": 9.24
+      },
+      "styleRecalcsPerFrame": 1.93,
+      "styleElementsPerFrame": 18.7,
+      "layoutsPerFrame": 0.65,
+      "forcedPerFrame": 1.3,
+      "longTasks": {
+       "count": 197,
+       "max": 116.9
+      },
+      "gc": {
+       "count": 205,
+       "totalMs": 246.8,
+       "maxMs": 29.6,
+       "perSecond": 10
+      },
+      "worstFrames": [
+       {
+        "ms": 117.1,
+        "kinds": {
+         "script": 51.8,
+         "style": 5.2,
+         "layout": 1.4,
+         "paint": 13.5,
+         "gc": 43.8,
+         "other": 1.4
+        }
+       },
+       {
+        "ms": 110.8,
+        "kinds": {
+         "script": 54.1,
+         "style": 11.2,
+         "layout": 12.7,
+         "paint": 28.9,
+         "other": 3.9
+        }
+       },
+       {
+        "ms": 100.6,
+        "kinds": {
+         "script": 59.1,
+         "style": 10.5,
+         "layout": 0.7,
+         "paint": 14.2,
+         "input": 0.8,
+         "other": 15.1
+        }
+       },
+       {
+        "ms": 99.1,
+        "kinds": {
+         "script": 78.5,
+         "style": 2.4,
+         "layout": 1.2,
+         "paint": 15.5,
+         "other": 1.4
+        }
+       },
+       {
+        "ms": 99,
+        "kinds": {
+         "script": 66.4,
+         "style": 10.5,
+         "layout": 2.6,
+         "paint": 17.1,
+         "other": 2.4
+        }
+       },
+       {
+        "ms": 93.4,
+        "kinds": {
+         "script": 65.1,
+         "style": 9.3,
+         "layout": 1.4,
+         "paint": 15.7,
+         "other": 1.7
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 30.13
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 8.09
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.72
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.71
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.56
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.14
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.13
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.1
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.09
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.81
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.29
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.27
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.25
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.22
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.5
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 67.6
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 3.7
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 3.1
+       }
+      ],
+      "segments": {
+       "frames": 562,
+       "ms": {
+        "layout": {
+         "mean": 1.88,
+         "p95": 7,
+         "max": 16.1,
+         "n": 562
+        },
+        "vorlauf": {
+         "mean": 0.08,
+         "p95": 0.2,
+         "max": 6.3,
+         "n": 562
+        },
+        "logik": {
+         "mean": 5.12,
+         "p95": 14.4,
+         "max": 35.3,
+         "n": 562
+        },
+        "ereignisse": {
+         "mean": 0.15,
+         "p95": 0.6,
+         "max": 8.8,
+         "n": 562
+        },
+        "weltbild": {
+         "mean": 18.1,
+         "p95": 33.7,
+         "max": 55.6,
+         "n": 562
+        },
+        "schadenszahlen": {
+         "mean": 0.23,
+         "p95": 0.5,
+         "max": 5.5,
+         "n": 562
+        },
+        "hud": {
+         "mean": 3.9,
+         "p95": 14.1,
+         "max": 41.1,
+         "n": 562
+        },
+        "ressourcenleiste": {
+         "mean": 0.44,
+         "p95": 1.1,
+         "max": 8.1,
+         "n": 562
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.1,
+         "max": 6.9,
+         "n": 562
+        },
+        "rest": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 1.6,
+         "n": 562
+        }
+       }
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "idle",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 717,
+    "seconds": 40.1,
+    "fps": 17.9,
+    "mainPerFrame": {
+     "n": 717,
+     "mean": 55.53,
+     "p50": 52.82,
+     "p95": 89.27,
+     "p99": 101.96,
+     "max": 143.69,
+     "over16": 706,
+     "over33": 658,
+     "over50": 416
+    },
+    "interval": {
+     "n": 717,
+     "mean": 55.75,
+     "p50": 53.16,
+     "p95": 89.64,
+     "p99": 102.16,
+     "max": 143.9,
+     "over16": 706,
+     "over33": 658,
+     "over50": 419
+    },
+    "kindsMean": {
+     "script": 35.02,
+     "style": 1.03,
+     "layout": 0.75,
+     "paint": 15.63,
+     "gc": 0.24,
+     "idle": 0.02,
+     "input": 0.1,
+     "other": 2.74
+    },
+    "kindsP95": {
+     "script": 58.34,
+     "style": 3.2,
+     "layout": 2.41,
+     "paint": 28.72,
+     "gc": 0,
+     "idle": 0.18,
+     "input": 1.01,
+     "other": 10.12
+    },
+    "longTasks": {
+     "count": 371,
+     "max": 141.9
+    },
+    "gc": {
+     "count": 71,
+     "totalMs": 252.1,
+     "maxMs": 47.3,
+     "perSecond": 1.8
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 7,
+       "strips": 15,
+       "hits": 1962
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 8,
+       "strips": 15,
+       "hits": 2344
+      }
+     },
+     "trace": {
+      "frames": 309,
+      "seconds": 20.1,
+      "fps": 15.4,
+      "mainPerFrame": {
+       "n": 309,
+       "mean": 64.41,
+       "p50": 64.34,
+       "p95": 97.8,
+       "p99": 110.01,
+       "max": 143.69,
+       "over16": 306,
+       "over33": 287,
+       "over50": 244
+      },
+      "rafTask": {
+       "n": 309,
+       "mean": 62.09,
+       "p50": 62.11,
+       "p95": 93.64,
+       "p99": 98.34,
+       "max": 141.9,
+       "over16": 305,
+       "over33": 284,
+       "over50": 230
+      },
+      "interval": {
+       "n": 309,
+       "mean": 64.69,
+       "p50": 64.79,
+       "p95": 98.39,
+       "p99": 110.05,
+       "max": 143.9,
+       "over16": 306,
+       "over33": 287,
+       "over50": 245
+      },
+      "kindsMean": {
+       "script": 39.96,
+       "style": 1.34,
+       "layout": 0.84,
+       "paint": 18.75,
+       "gc": 0.3,
+       "idle": 0.02,
+       "input": 0.14,
+       "other": 3.06
+      },
+      "kindsP95": {
+       "script": 62.95,
+       "style": 5.62,
+       "layout": 2.61,
+       "paint": 30.52,
+       "gc": 0,
+       "idle": 0.18,
+       "input": 1.19,
+       "other": 11.13
+      },
+      "styleRecalcsPerFrame": 0.81,
+      "styleElementsPerFrame": 2.7,
+      "layoutsPerFrame": 0.48,
+      "forcedPerFrame": 0.35,
+      "longTasks": {
+       "count": 231,
+       "max": 141.9
+      },
+      "gc": {
+       "count": 43,
+       "totalMs": 131.2,
+       "maxMs": 47.3,
+       "perSecond": 2.1
+      },
+      "worstFrames": [
+       {
+        "ms": 143.7,
+        "kinds": {
+         "script": 72.1,
+         "style": 5.4,
+         "layout": 1.6,
+         "paint": 14,
+         "gc": 48.5,
+         "other": 2.1
+        }
+       },
+       {
+        "ms": 113.7,
+        "kinds": {
+         "script": 73,
+         "style": 7.6,
+         "layout": 1.8,
+         "paint": 27.6,
+         "other": 3.4
+        }
+       },
+       {
+        "ms": 110.8,
+        "kinds": {
+         "script": 77.3,
+         "style": 2.2,
+         "layout": 1.6,
+         "paint": 22,
+         "other": 7.7
+        }
+       },
+       {
+        "ms": 110,
+        "kinds": {
+         "script": 59.3,
+         "style": 2.2,
+         "layout": 1.8,
+         "paint": 28.2,
+         "input": 1.6,
+         "other": 16.9
+        }
+       },
+       {
+        "ms": 107,
+        "kinds": {
+         "script": 63.8,
+         "style": 2.8,
+         "layout": 2.2,
+         "paint": 30,
+         "other": 8.1
+        }
+       },
+       {
+        "ms": 106.3,
+        "kinds": {
+         "script": 70.3,
+         "style": 2,
+         "layout": 2.2,
+         "paint": 26.1,
+         "other": 5.7
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 38.78
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 13.99
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.15
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 1.34
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.14
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.09
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.84
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.62
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.6
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.58
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.56
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.55
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.46
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.3
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 41
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 1.8
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.3
+       }
+      ],
+      "segments": {
+       "frames": 381,
+       "ms": {
+        "layout": {
+         "mean": 3.2,
+         "p95": 15.5,
+         "max": 24.4,
+         "n": 381
+        },
+        "vorlauf": {
+         "mean": 0.12,
+         "p95": 0.3,
+         "max": 6.4,
+         "n": 381
+        },
+        "logik": {
+         "mean": 9.77,
+         "p95": 24.2,
+         "max": 74.1,
+         "n": 381
+        },
+        "ereignisse": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 7,
+         "n": 381
+        },
+        "weltbild": {
+         "mean": 17.55,
+         "p95": 35.7,
+         "max": 58.1,
+         "n": 381
+        },
+        "schadenszahlen": {
+         "mean": 0.17,
+         "p95": 0.3,
+         "max": 3.3,
+         "n": 381
+        },
+        "hud": {
+         "mean": 4.86,
+         "p95": 15.5,
+         "max": 26.7,
+         "n": 381
+        },
+        "ressourcenleiste": {
+         "mean": 0.38,
+         "p95": 0.7,
+         "max": 8.2,
+         "n": 381
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.1,
+         "max": 0.3,
+         "n": 381
+        },
+        "rest": {
+         "mean": 0.09,
+         "p95": 0.3,
+         "max": 3.7,
+         "n": 381
+        }
+       }
+      },
+      "extra": {}
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 7,
+       "strips": 19,
+       "hits": 2905
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 8,
+       "strips": 19,
+       "hits": 3407
+      }
+     },
+     "trace": {
+      "frames": 408,
+      "seconds": 20,
+      "fps": 20.4,
+      "mainPerFrame": {
+       "n": 408,
+       "mean": 48.8,
+       "p50": 47.81,
+       "p95": 68.26,
+       "p99": 73.55,
+       "max": 124.15,
+       "over16": 400,
+       "over33": 371,
+       "over50": 172
+      },
+      "rafTask": {
+       "n": 408,
+       "mean": 46.76,
+       "p50": 45.59,
+       "p95": 67.02,
+       "p99": 71.17,
+       "max": 121.98,
+       "over16": 397,
+       "over33": 359,
+       "over50": 140
+      },
+      "interval": {
+       "n": 408,
+       "mean": 48.98,
+       "p50": 47.86,
+       "p95": 68.45,
+       "p99": 73.59,
+       "max": 124.19,
+       "over16": 400,
+       "over33": 371,
+       "over50": 174
+      },
+      "kindsMean": {
+       "script": 31.28,
+       "style": 0.8,
+       "layout": 0.68,
+       "paint": 13.26,
+       "gc": 0.2,
+       "idle": 0.01,
+       "input": 0.07,
+       "other": 2.5
+      },
+      "kindsP95": {
+       "script": 44.69,
+       "style": 2.61,
+       "layout": 2.23,
+       "paint": 19.85,
+       "gc": 0,
+       "idle": 0.18,
+       "input": 0,
+       "other": 9.33
+      },
+      "styleRecalcsPerFrame": 0.4,
+      "styleElementsPerFrame": 2.7,
+      "layoutsPerFrame": 0.39,
+      "forcedPerFrame": 0.03,
+      "longTasks": {
+       "count": 140,
+       "max": 122
+      },
+      "gc": {
+       "count": 28,
+       "totalMs": 120.9,
+       "maxMs": 40.5,
+       "perSecond": 1.4
+      },
+      "worstFrames": [
+       {
+        "ms": 124.2,
+        "kinds": {
+         "script": 55.8,
+         "style": 3,
+         "layout": 1.8,
+         "paint": 19.3,
+         "gc": 41.7,
+         "other": 2.6
+        }
+       },
+       {
+        "ms": 79,
+        "kinds": {
+         "script": 49,
+         "style": 2.2,
+         "layout": 2.2,
+         "paint": 22.9,
+         "other": 2.7
+        }
+       },
+       {
+        "ms": 76.9,
+        "kinds": {
+         "script": 37.3,
+         "style": 2,
+         "layout": 2.2,
+         "paint": 21.1,
+         "other": 14.3
+        }
+       },
+       {
+        "ms": 74.1,
+        "kinds": {
+         "script": 52.1,
+         "style": 2,
+         "layout": 1.8,
+         "paint": 16.3,
+         "other": 2
+        }
+       },
+       {
+        "ms": 73.6,
+        "kinds": {
+         "script": 48.7,
+         "style": 2.4,
+         "layout": 1.6,
+         "paint": 16.9,
+         "input": 1.2,
+         "other": 2.7
+        }
+       },
+       {
+        "ms": 73,
+        "kinds": {
+         "script": 50.4,
+         "style": 2.4,
+         "layout": 2,
+         "paint": 13.9,
+         "other": 4.3
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 30.34
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 9.64
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.95
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.02
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 0.82
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 0.8
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.68
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.47
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.44
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 0.37
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.36
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.33
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.31
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.28
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 43.1
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 1.8
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 1.6
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.6
+       }
+      ],
+      "segments": {
+       "frames": 501,
+       "ms": {
+        "layout": {
+         "mean": 1.48,
+         "p95": 9,
+         "max": 22.5,
+         "n": 501
+        },
+        "vorlauf": {
+         "mean": 0.08,
+         "p95": 0.2,
+         "max": 8.6,
+         "n": 501
+        },
+        "logik": {
+         "mean": 8.58,
+         "p95": 16.4,
+         "max": 55.5,
+         "n": 501
+        },
+        "ereignisse": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 4.6,
+         "n": 501
+        },
+        "weltbild": {
+         "mean": 14.74,
+         "p95": 24.9,
+         "max": 40.5,
+         "n": 501
+        },
+        "schadenszahlen": {
+         "mean": 0.15,
+         "p95": 0.3,
+         "max": 5.4,
+         "n": 501
+        },
+        "hud": {
+         "mean": 3.61,
+         "p95": 11.5,
+         "max": 26.3,
+         "n": 501
+        },
+        "ressourcenleiste": {
+         "mean": 0.2,
+         "p95": 0.6,
+         "max": 1,
+         "n": 501
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0.2,
+         "max": 0.3,
+         "n": 501
+        },
+        "rest": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 0.8,
+         "n": 501
+        }
+       }
+      },
+      "extra": {}
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "walk",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 665,
+    "seconds": 40.5,
+    "fps": 16.4,
+    "mainPerFrame": {
+     "n": 665,
+     "mean": 60.3,
+     "p50": 57.69,
+     "p95": 102.49,
+     "p99": 126.21,
+     "max": 223.48,
+     "over16": 652,
+     "over33": 610,
+     "over50": 439
+    },
+    "interval": {
+     "n": 665,
+     "mean": 60.62,
+     "p50": 57.88,
+     "p95": 102.8,
+     "p99": 126.26,
+     "max": 223.88,
+     "over16": 654,
+     "over33": 610,
+     "over50": 442
+    },
+    "kindsMean": {
+     "script": 36.13,
+     "style": 3.89,
+     "layout": 1.1,
+     "paint": 14.69,
+     "gc": 0.34,
+     "idle": 0.02,
+     "input": 0.08,
+     "other": 4.04
+    },
+    "kindsP95": {
+     "script": 64.14,
+     "style": 10.47,
+     "layout": 3.21,
+     "paint": 27.59,
+     "gc": 0,
+     "idle": 0.18,
+     "input": 1.02,
+     "other": 12.03
+    },
+    "longTasks": {
+     "count": 406,
+     "max": 221.8
+    },
+    "gc": {
+     "count": 118,
+     "totalMs": 317.5,
+     "maxMs": 49.6,
+     "perSecond": 2.9
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 8,
+       "strips": 15,
+       "hits": 2428
+      }
+     },
+     "after": {
+      "x": 10656,
+      "y": 10078,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 9,
+       "strips": 25,
+       "hits": 2840
+      }
+     },
+     "trace": {
+      "frames": 331,
+      "seconds": 20.2,
+      "fps": 16.3,
+      "mainPerFrame": {
+       "n": 331,
+       "mean": 60.58,
+       "p50": 58.99,
+       "p95": 107.09,
+       "p99": 126.21,
+       "max": 159.09,
+       "over16": 325,
+       "over33": 302,
+       "over50": 219
+      },
+      "rafTask": {
+       "n": 331,
+       "mean": 57.59,
+       "p50": 55.11,
+       "p95": 102.84,
+       "p99": 125.82,
+       "max": 156.76,
+       "over16": 320,
+       "over33": 295,
+       "over50": 202
+      },
+      "interval": {
+       "n": 331,
+       "mean": 60.93,
+       "p50": 59.12,
+       "p95": 107.39,
+       "p99": 126.26,
+       "max": 159.15,
+       "over16": 327,
+       "over33": 302,
+       "over50": 220
+      },
+      "kindsMean": {
+       "script": 35.71,
+       "style": 3.99,
+       "layout": 1.09,
+       "paint": 15.08,
+       "gc": 0.46,
+       "idle": 0.03,
+       "input": 0.07,
+       "other": 4.14
+      },
+      "kindsP95": {
+       "script": 65.37,
+       "style": 11.24,
+       "layout": 3.21,
+       "paint": 27.88,
+       "gc": 0,
+       "idle": 0.18,
+       "input": 1.01,
+       "other": 12.45
+      },
+      "styleRecalcsPerFrame": 1.86,
+      "styleElementsPerFrame": 9.2,
+      "layoutsPerFrame": 0.53,
+      "forcedPerFrame": 0.96,
+      "longTasks": {
+       "count": 203,
+       "max": 156.8
+      },
+      "gc": {
+       "count": 41,
+       "totalMs": 237.6,
+       "maxMs": 47.4,
+       "perSecond": 2
+      },
+      "worstFrames": [
+       {
+        "ms": 159.1,
+        "kinds": {
+         "script": 123.4,
+         "style": 3.6,
+         "paint": 28.3,
+         "other": 3.4
+        }
+       },
+       {
+        "ms": 153,
+        "kinds": {
+         "script": 138.6,
+         "style": 1.2,
+         "paint": 9.6,
+         "other": 3.6
+        }
+       },
+       {
+        "ms": 135.9,
+        "kinds": {
+         "script": 81.1,
+         "style": 7.1,
+         "layout": 6.2,
+         "paint": 35.5,
+         "other": 6
+        }
+       },
+       {
+        "ms": 126.2,
+        "kinds": {
+         "script": 65.4,
+         "style": 14,
+         "layout": 2,
+         "paint": 40.3,
+         "other": 4.5
+        }
+       },
+       {
+        "ms": 125.7,
+        "kinds": {
+         "script": 46.2,
+         "style": 2.7,
+         "paint": 23.1,
+         "gc": 50.8,
+         "other": 2.9
+        }
+       },
+       {
+        "ms": 123.9,
+        "kinds": {
+         "script": 73.6,
+         "style": 7.9,
+         "layout": 8.8,
+         "paint": 22.8,
+         "input": 1.4,
+         "other": 9.4
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 33.15
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 9.35
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.99
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.85
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.68
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.68
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.35
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.09
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.87
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.8
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.57
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.49
+       },
+       {
+        "name": "Decode Image",
+        "msPerFrame": 0.37
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.34
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.4
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 44.2
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.4
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.4
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.2
+       }
+      ],
+      "segments": {
+       "frames": 421,
+       "ms": {
+        "layout": {
+         "mean": 3.41,
+         "p95": 10.9,
+         "max": 52.2,
+         "n": 421
+        },
+        "vorlauf": {
+         "mean": 0.14,
+         "p95": 0.2,
+         "max": 9.1,
+         "n": 421
+        },
+        "logik": {
+         "mean": 8.04,
+         "p95": 16.7,
+         "max": 56.2,
+         "n": 421
+        },
+        "ereignisse": {
+         "mean": 0.13,
+         "p95": 0.8,
+         "max": 5.7,
+         "n": 421
+        },
+        "weltbild": {
+         "mean": 14.27,
+         "p95": 31.3,
+         "max": 136.3,
+         "n": 421
+        },
+        "schadenszahlen": {
+         "mean": 0.24,
+         "p95": 0.6,
+         "max": 4.5,
+         "n": 421
+        },
+        "hud": {
+         "mean": 5.55,
+         "p95": 17,
+         "max": 25.7,
+         "n": 421
+        },
+        "ressourcenleiste": {
+         "mean": 0.21,
+         "p95": 0.6,
+         "max": 4.2,
+         "n": 421
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.2,
+         "max": 0.6,
+         "n": 421
+        },
+        "rest": {
+         "mean": 3.29,
+         "p95": 17.4,
+         "max": 39.2,
+         "n": 421
+        }
+       }
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    },
+    {
+     "prep": {
+      "points": 7,
+      "length": 2130
+     },
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": false,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 8,
+       "strips": 19,
+       "hits": 3495
+      }
+     },
+     "after": {
+      "x": 10664,
+      "y": 10088,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 0,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 9,
+       "strips": 29,
+       "hits": 3912
+      }
+     },
+     "trace": {
+      "frames": 334,
+      "seconds": 20.3,
+      "fps": 16.5,
+      "mainPerFrame": {
+       "n": 334,
+       "mean": 60.02,
+       "p50": 56.87,
+       "p95": 96.72,
+       "p99": 122.33,
+       "max": 223.48,
+       "over16": 327,
+       "over33": 308,
+       "over50": 220
+      },
+      "rafTask": {
+       "n": 334,
+       "mean": 56.87,
+       "p50": 53.68,
+       "p95": 91.73,
+       "p99": 121.08,
+       "max": 221.85,
+       "over16": 323,
+       "over33": 298,
+       "over50": 201
+      },
+      "interval": {
+       "n": 334,
+       "mean": 60.3,
+       "p50": 57.24,
+       "p95": 98.74,
+       "p99": 122.89,
+       "max": 223.88,
+       "over16": 327,
+       "over33": 308,
+       "over50": 222
+      },
+      "kindsMean": {
+       "script": 36.54,
+       "style": 3.8,
+       "layout": 1.1,
+       "paint": 14.31,
+       "gc": 0.22,
+       "idle": 0.02,
+       "input": 0.09,
+       "other": 3.93
+      },
+      "kindsP95": {
+       "script": 62.42,
+       "style": 10.04,
+       "layout": 3.21,
+       "paint": 27.51,
+       "gc": 0,
+       "idle": 0.18,
+       "input": 1.03,
+       "other": 11.97
+      },
+      "styleRecalcsPerFrame": 1.87,
+      "styleElementsPerFrame": 8.8,
+      "layoutsPerFrame": 0.53,
+      "forcedPerFrame": 0.98,
+      "longTasks": {
+       "count": 203,
+       "max": 221.8
+      },
+      "gc": {
+       "count": 77,
+       "totalMs": 79.9,
+       "maxMs": 49.6,
+       "perSecond": 3.8
+      },
+      "worstFrames": [
+       {
+        "ms": 223.5,
+        "kinds": {
+         "script": 187.4,
+         "style": 9.7,
+         "layout": 1.2,
+         "paint": 20.7,
+         "input": 1,
+         "other": 3.5
+        }
+       },
+       {
+        "ms": 151.7,
+        "kinds": {
+         "script": 96.6,
+         "style": 22.8,
+         "layout": 2,
+         "paint": 20.1,
+         "input": 1.8,
+         "other": 8.4
+        }
+       },
+       {
+        "ms": 147.1,
+        "kinds": {
+         "script": 77.8,
+         "style": 7.4,
+         "layout": 1.4,
+         "paint": 57.1,
+         "other": 3.3
+        }
+       },
+       {
+        "ms": 122.3,
+        "kinds": {
+         "script": 71.7,
+         "style": 10.5,
+         "layout": 3.6,
+         "paint": 26.8,
+         "other": 9.8
+        }
+       },
+       {
+        "ms": 118.9,
+        "kinds": {
+         "script": 61.8,
+         "style": 15.7,
+         "layout": 10.3,
+         "paint": 22.5,
+         "other": 8.6
+        }
+       },
+       {
+        "ms": 115.5,
+        "kinds": {
+         "script": 73.2,
+         "style": 7.8,
+         "layout": 7.3,
+         "paint": 24.6,
+         "other": 2.5
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 33.89
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 8.73
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.8
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.7
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.61
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.57
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.4
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.1
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 0.89
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.68
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.49
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.49
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.43
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.33
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.5
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 45.5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 2.5
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 2.3
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.2
+       }
+      ],
+      "segments": {
+       "frames": 426,
+       "ms": {
+        "layout": {
+         "mean": 3.49,
+         "p95": 11.3,
+         "max": 26.3,
+         "n": 426
+        },
+        "vorlauf": {
+         "mean": 0.08,
+         "p95": 0.2,
+         "max": 7,
+         "n": 426
+        },
+        "logik": {
+         "mean": 8.3,
+         "p95": 18.1,
+         "max": 39.8,
+         "n": 426
+        },
+        "ereignisse": {
+         "mean": 0.11,
+         "p95": 0.8,
+         "max": 5.3,
+         "n": 426
+        },
+        "weltbild": {
+         "mean": 14.53,
+         "p95": 34.2,
+         "max": 131.6,
+         "n": 426
+        },
+        "schadenszahlen": {
+         "mean": 0.24,
+         "p95": 0.5,
+         "max": 5,
+         "n": 426
+        },
+        "hud": {
+         "mean": 5.43,
+         "p95": 17.2,
+         "max": 36.9,
+         "n": 426
+        },
+        "ressourcenleiste": {
+         "mean": 0.16,
+         "p95": 0.5,
+         "max": 5.5,
+         "n": 426
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.1,
+         "max": 0.7,
+         "n": 426
+        },
+        "rest": {
+         "mean": 3.64,
+         "p95": 17.3,
+         "max": 45.2,
+         "n": 426
+        }
+       }
+      },
+      "extra": {
+       "arrivedEarly": false
+      }
+     }
+    }
+   ],
+   "prof": null
+  },
+  {
+   "rate": 6,
+   "scene": "combat",
+   "session": "B",
+   "url": "http://localhost:4879/",
+   "merged": {
+    "frames": 696,
+    "seconds": 40.6,
+    "fps": 17.2,
+    "mainPerFrame": {
+     "n": 696,
+     "mean": 57.58,
+     "p50": 59.02,
+     "p95": 100.9,
+     "p99": 121.92,
+     "max": 142.3,
+     "over16": 658,
+     "over33": 526,
+     "over50": 414
+    },
+    "interval": {
+     "n": 696,
+     "mean": 58.13,
+     "p50": 59.27,
+     "p95": 101.1,
+     "p99": 122.12,
+     "max": 142.35,
+     "over16": 672,
+     "over33": 533,
+     "over50": 416
+    },
+    "kindsMean": {
+     "script": 28.77,
+     "style": 4.95,
+     "layout": 1.29,
+     "paint": 18.15,
+     "gc": 0.17,
+     "idle": 0.03,
+     "input": 0.36,
+     "other": 3.87
+    },
+    "kindsP95": {
+     "script": 55.01,
+     "style": 15.53,
+     "layout": 5.68,
+     "paint": 37.11,
+     "gc": 0,
+     "idle": 0.18,
+     "input": 1.75,
+     "other": 11.09
+    },
+    "longTasks": {
+     "count": 389,
+     "max": 131.7
+    },
+    "gc": {
+     "count": 67,
+     "totalMs": 145.7,
+     "maxMs": 27.8,
+     "perSecond": 1.7
+    },
+    "runs": 2
+   },
+   "runs": [
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 10,
+       "strips": 31,
+       "hits": 2901
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 4,
+      "ground": {
+       "full": 11,
+       "strips": 31,
+       "hits": 3543
+      }
+     },
+     "trace": {
+      "frames": 435,
+      "seconds": 20.4,
+      "fps": 21.4,
+      "mainPerFrame": {
+       "n": 435,
+       "mean": 46.06,
+       "p50": 41.9,
+       "p95": 85.78,
+       "p99": 99.8,
+       "max": 113.17,
+       "over16": 400,
+       "over33": 274,
+       "over50": 179
+      },
+      "rafTask": {
+       "n": 435,
+       "mean": 43.21,
+       "p50": 39.05,
+       "p95": 84.6,
+       "p99": 95.33,
+       "max": 112.34,
+       "over16": 384,
+       "over33": 263,
+       "over50": 160
+      },
+      "interval": {
+       "n": 435,
+       "mean": 46.73,
+       "p50": 42.27,
+       "p95": 86.18,
+       "p99": 100.07,
+       "max": 113.39,
+       "over16": 413,
+       "over33": 281,
+       "over50": 180
+      },
+      "kindsMean": {
+       "script": 22.42,
+       "style": 3.65,
+       "layout": 0.95,
+       "paint": 15.31,
+       "gc": 0.22,
+       "idle": 0.01,
+       "input": 0.25,
+       "other": 3.25
+      },
+      "kindsP95": {
+       "script": 48.43,
+       "style": 13.86,
+       "layout": 3.92,
+       "paint": 31.56,
+       "gc": 0,
+       "idle": 0.18,
+       "input": 1.44,
+       "other": 10.91
+      },
+      "styleRecalcsPerFrame": 1.85,
+      "styleElementsPerFrame": 17.1,
+      "layoutsPerFrame": 0.56,
+      "forcedPerFrame": 1.23,
+      "longTasks": {
+       "count": 160,
+       "max": 112.3
+      },
+      "gc": {
+       "count": 55,
+       "totalMs": 121.2,
+       "maxMs": 27.8,
+       "perSecond": 2.7
+      },
+      "worstFrames": [
+       {
+        "ms": 113.2,
+        "kinds": {
+         "script": 47.6,
+         "style": 15.1,
+         "layout": 2.4,
+         "paint": 45.5,
+         "other": 2.5
+        }
+       },
+       {
+        "ms": 110.9,
+        "kinds": {
+         "script": 70.9,
+         "style": 11.8,
+         "layout": 2.8,
+         "paint": 18,
+         "other": 7.4
+        }
+       },
+       {
+        "ms": 107.1,
+        "kinds": {
+         "script": 51.7,
+         "style": 24.9,
+         "layout": 5.2,
+         "paint": 22.1,
+         "other": 3.2
+        }
+       },
+       {
+        "ms": 100.7,
+        "kinds": {
+         "script": 48.3,
+         "style": 13.7,
+         "layout": 2.6,
+         "paint": 28.4,
+         "other": 7.7
+        }
+       },
+       {
+        "ms": 99.8,
+        "kinds": {
+         "script": 59.8,
+         "style": 7.3,
+         "layout": 8.1,
+         "paint": 22.3,
+         "other": 2.3
+        }
+       },
+       {
+        "ms": 99.5,
+        "kinds": {
+         "script": 57.7,
+         "style": 5.3,
+         "layout": 5.2,
+         "paint": 20.3,
+         "input": 1.3,
+         "other": 9.4
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 21.52
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 9.41
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 3.65
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 1.91
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 1.36
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.33
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 1.18
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.02
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 0.95
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 0.64
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.39
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.35
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.29
+       },
+       {
+        "name": "LocalFrameView::ScheduleAnimation",
+        "msPerFrame": 0.25
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 98.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 70.3
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 4.1
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 2.1
+       }
+      ],
+      "segments": {
+       "frames": 641,
+       "ms": {
+        "layout": {
+         "mean": 2,
+         "p95": 7.2,
+         "max": 20.7,
+         "n": 641
+        },
+        "vorlauf": {
+         "mean": 0.04,
+         "p95": 0.2,
+         "max": 4.8,
+         "n": 641
+        },
+        "logik": {
+         "mean": 4.35,
+         "p95": 14,
+         "max": 50.6,
+         "n": 641
+        },
+        "ereignisse": {
+         "mean": 0.1,
+         "p95": 0.2,
+         "max": 9.7,
+         "n": 641
+        },
+        "weltbild": {
+         "mean": 12.54,
+         "p95": 33.6,
+         "max": 51.7,
+         "n": 641
+        },
+        "schadenszahlen": {
+         "mean": 0.15,
+         "p95": 0.5,
+         "max": 5.3,
+         "n": 641
+        },
+        "hud": {
+         "mean": 3.13,
+         "p95": 16.2,
+         "max": 41.6,
+         "n": 641
+        },
+        "ressourcenleiste": {
+         "mean": 0.18,
+         "p95": 0.6,
+         "max": 5.3,
+         "n": 641
+        },
+        "karte": {
+         "mean": 0.01,
+         "p95": 0,
+         "max": 0.5,
+         "n": 641
+        },
+        "rest": {
+         "mean": 0.06,
+         "p95": 0.2,
+         "max": 5.3,
+         "n": 641
+        }
+       }
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    },
+    {
+     "prep": {},
+     "before": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 4,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 0,
+      "chunks": 5,
+      "ground": {
+       "full": 10,
+       "strips": 34,
+       "hits": 3945
+      }
+     },
+     "after": {
+      "x": 9702,
+      "y": 9053,
+      "density": 2,
+      "canvas": "1216x544",
+      "zoom": 1.5,
+      "touch": true,
+      "enemies": 3,
+      "companions": 1,
+      "combat": true,
+      "dead": false,
+      "popups": 0,
+      "level": 20,
+      "settings": {
+       "light": false,
+       "fx": false,
+       "lowRes": true,
+       "sct": true
+      },
+      "damage": 1437,
+      "chunks": 5,
+      "ground": {
+       "full": 11,
+       "strips": 34,
+       "hits": 4303
+      }
+     },
+     "trace": {
+      "frames": 261,
+      "seconds": 20.2,
+      "fps": 12.9,
+      "mainPerFrame": {
+       "n": 261,
+       "mean": 76.79,
+       "p50": 76.75,
+       "p95": 109.9,
+       "p99": 126.6,
+       "max": 142.3,
+       "over16": 258,
+       "over33": 252,
+       "over50": 235
+      },
+      "rafTask": {
+       "n": 261,
+       "mean": 73.14,
+       "p50": 74.18,
+       "p95": 107.12,
+       "p99": 119.8,
+       "max": 131.73,
+       "over16": 258,
+       "over33": 252,
+       "over50": 228
+      },
+      "interval": {
+       "n": 261,
+       "mean": 77.13,
+       "p50": 77.21,
+       "p95": 110.68,
+       "p99": 126.84,
+       "max": 142.35,
+       "over16": 259,
+       "over33": 252,
+       "over50": 236
+      },
+      "kindsMean": {
+       "script": 39.35,
+       "style": 7.11,
+       "layout": 1.85,
+       "paint": 22.89,
+       "gc": 0.09,
+       "idle": 0.05,
+       "input": 0.54,
+       "other": 4.91
+      },
+      "kindsP95": {
+       "script": 59.93,
+       "style": 17.64,
+       "layout": 7.19,
+       "paint": 41.72,
+       "gc": 0,
+       "idle": 0.19,
+       "input": 2.4,
+       "other": 12.35
+      },
+      "styleRecalcsPerFrame": 2.15,
+      "styleElementsPerFrame": 23.2,
+      "layoutsPerFrame": 0.81,
+      "forcedPerFrame": 1.38,
+      "longTasks": {
+       "count": 229,
+       "max": 131.7
+      },
+      "gc": {
+       "count": 12,
+       "totalMs": 24.3,
+       "maxMs": 10,
+       "perSecond": 0.6
+      },
+      "worstFrames": [
+       {
+        "ms": 142.3,
+        "kinds": {
+         "script": 42.5,
+         "style": 15.5,
+         "layout": 11.8,
+         "paint": 57,
+         "idle": 7.4,
+         "input": 1.2,
+         "other": 6.9
+        }
+       },
+       {
+        "ms": 126.8,
+        "kinds": {
+         "script": 55,
+         "style": 17.6,
+         "layout": 5.8,
+         "paint": 37.9,
+         "other": 10.4
+        }
+       },
+       {
+        "ms": 126.6,
+        "kinds": {
+         "script": 50,
+         "style": 30.1,
+         "layout": 6.6,
+         "paint": 25.9,
+         "input": 0.8,
+         "other": 13.1
+        }
+       },
+       {
+        "ms": 125.8,
+        "kinds": {
+         "script": 76.3,
+         "style": 8.4,
+         "layout": 4.8,
+         "paint": 28.2,
+         "other": 8.1
+        }
+       },
+       {
+        "ms": 123.9,
+        "kinds": {
+         "script": 63.5,
+         "style": 12.3,
+         "layout": 2,
+         "paint": 37.5,
+         "other": 8.5
+        }
+       },
+       {
+        "ms": 123.8,
+        "kinds": {
+         "script": 51.9,
+         "style": 12.7,
+         "layout": 1.6,
+         "paint": 48.9,
+         "input": 1,
+         "other": 7.7
+        }
+       }
+      ],
+      "topEvents": [
+       {
+        "name": "FunctionCall",
+        "msPerFrame": 37.86
+       },
+       {
+        "name": "LayerTreeHost::DoUpdateLayers",
+        "msPerFrame": 13.86
+       },
+       {
+        "name": "UpdateLayoutTree",
+        "msPerFrame": 7.11
+       },
+       {
+        "name": "RasterImplementation::RasterCHROMIUM",
+        "msPerFrame": 2.53
+       },
+       {
+        "name": "ProxyMain::BeginMainFrame",
+        "msPerFrame": 2.23
+       },
+       {
+        "name": "Layerize",
+        "msPerFrame": 2.07
+       },
+       {
+        "name": "Layout",
+        "msPerFrame": 1.85
+       },
+       {
+        "name": "Paint",
+        "msPerFrame": 1.76
+       },
+       {
+        "name": "ThreadControllerImpl::RunTask",
+        "msPerFrame": 1.35
+       },
+       {
+        "name": "PrePaint",
+        "msPerFrame": 1.18
+       },
+       {
+        "name": "RunTask",
+        "msPerFrame": 0.72
+       },
+       {
+        "name": "Commit",
+        "msPerFrame": 0.56
+       },
+       {
+        "name": "HitTest",
+        "msPerFrame": 0.54
+       },
+       {
+        "name": "FireAnimationFrame",
+        "msPerFrame": 0.51
+       }
+      ],
+      "threads": [
+       {
+        "thread": "CrRendererMain",
+        "busyPct": 99.6
+       },
+       {
+        "thread": "CrGpuMain",
+        "busyPct": 53.8
+       },
+       {
+        "thread": "VizCompositorThread",
+        "busyPct": 5
+       },
+       {
+        "thread": "Compositor",
+        "busyPct": 3.6
+       },
+       {
+        "thread": "ThreadPoolForegroundWorker",
+        "busyPct": 1.4
+       }
+      ],
+      "segments": {
+       "frames": 357,
+       "ms": {
+        "layout": {
+         "mean": 3.62,
+         "p95": 12.7,
+         "max": 25.9,
+         "n": 357
+        },
+        "vorlauf": {
+         "mean": 0.07,
+         "p95": 0.2,
+         "max": 4.2,
+         "n": 357
+        },
+        "logik": {
+         "mean": 7.47,
+         "p95": 17.2,
+         "max": 28,
+         "n": 357
+        },
+        "ereignisse": {
+         "mean": 0.21,
+         "p95": 1.2,
+         "max": 17.6,
+         "n": 357
+        },
+        "weltbild": {
+         "mean": 19.5,
+         "p95": 36.1,
+         "max": 50.7,
+         "n": 357
+        },
+        "schadenszahlen": {
+         "mean": 0.24,
+         "p95": 0.7,
+         "max": 5.1,
+         "n": 357
+        },
+        "hud": {
+         "mean": 6.52,
+         "p95": 17.7,
+         "max": 30.3,
+         "n": 357
+        },
+        "ressourcenleiste": {
+         "mean": 0.44,
+         "p95": 0.8,
+         "max": 5.1,
+         "n": 357
+        },
+        "karte": {
+         "mean": 0.02,
+         "p95": 0.2,
+         "max": 0.3,
+         "n": 357
+        },
+        "rest": {
+         "mean": 0.09,
+         "p95": 0.3,
+         "max": 3.9,
+         "n": 357
+        }
+       }
+      },
+      "extra": {
+       "skills": [
+        "auto",
+        "strike",
+        "mark",
+        "burst"
+       ]
+      }
+     }
+    }
+   ],
+   "prof": null
+  }
+ ],
+ "setup": {
+  "A": {
+   "url": "http://localhost:4878/",
+   "x": 9702,
+   "y": 9053,
+   "density": 2,
+   "canvas": "1216x544",
+   "zoom": 1.5,
+   "touch": true,
+   "enemies": 0,
+   "companions": 1,
+   "combat": false,
+   "dead": false,
+   "popups": 0,
+   "level": 20,
+   "settings": {
+    "light": false,
+    "fx": false,
+    "lowRes": true,
+    "sct": true
+   },
+   "damage": 0,
+   "chunks": 2,
+   "ground": {
+    "full": 2,
+    "strips": 0,
+    "hits": 153
+   }
+  },
+  "B": {
+   "url": "http://localhost:4879/",
+   "x": 9702,
+   "y": 9053,
+   "density": 2,
+   "canvas": "1216x544",
+   "zoom": 1.5,
+   "touch": true,
+   "enemies": 0,
+   "companions": 1,
+   "combat": false,
+   "dead": false,
+   "popups": 0,
+   "level": 20,
+   "settings": {
+    "light": false,
+    "fx": false,
+    "lowRes": true,
+    "sct": true
+   },
+   "damage": 0,
+   "chunks": 2,
+   "ground": {
+    "full": 2,
+    "strips": 1,
+    "hits": 197
+   }
+  }
+ }
+}

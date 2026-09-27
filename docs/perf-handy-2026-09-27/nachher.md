@@ -1,5 +1,7 @@
 # Handy-Messung nachher (27.09.2026, Branch perf-handy)
 
+> Fortsetzung: [runde2.md](runde2.md) – Rechen-Worker, genaues Einrasten, M-15 (Runde 1 → Runde 2).
+
 Messaufbau wie in [vorher.md](vorher.md): Android-Nachbildung 915 × 412, Gerätepixel 2,625, Touch, Grafik „Niedrig“, Stufe 20, Canvas beschleunigt (SwiftShader), `?render=gpu`. Maßstab: **Hauptfaden-Zeit je Bild**.
 
 **Vergleich vorher/nachher im selben Lauf** (`node scripts/perf-handy.mjs --ab=<alter Stand>`): zwei Browser nacheinander, Durchgänge A, B, B, A, je Szene 20 s, also 40 s je Zelle. Vorher = origin/main d67b7b86 (auf eigenem Port ausgeliefert), nachher = dieser Branch. Rohdaten `ab.json`, Profil nachher `nachher-profil.json`.

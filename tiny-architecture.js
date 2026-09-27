@@ -1,6 +1,7 @@
 import {WORLD_ART_DENSITY as density} from './art-quality.js';
 import {buildingSkin,buildingSpriteLayout} from './world-scale.js';
 import {normalizeArt} from './art-style.js';
+import {spriteJob} from './sprite-jobs.js';
 import {artImages} from './asset-art.js';
 import {maifeld} from './maifeld-art.js';
 import {drawBuilding as fallback,drawFurniture} from './comic-architecture.js';
@@ -32,6 +33,7 @@ function make(b){const l=facadeLayout(b),pad=46,top=l.roofTop-(b.church?180:32),
 export function drawBuilding(c,b,time){
  const name=buildingSkin(b),a=maifeld[name];
  if(a){const l=buildingSpriteLayout(b,a),width=l.world[3]-l.world[0],key=['registered',name,width,b.door.x-b.minX].join(':');let sprite=cache.get(key);
+  /* Runde 2: Vorbestellung beim Sprite-Worker (Renderer.prefetchSprites) statt Rastern im Bild */if(c.prefetchOnly){if(!sprite){const W=Math.ceil(width*density),H=Math.ceil(l.height*density),parts=[0,1,2].map(i=>{const left=Math.round((l.world[i]-l.world[0])*density),right=Math.round((l.world[i+1]-l.world[0])*density);return {sx:l.source[i],sy:a.y,sw:l.source[i+1]-l.source[i],sh:a.h,dx:left,dy:0,dw:right-left,dh:H};});spriteJob('b:'+key,a.image,W,H,parts,'',bmp=>{if(!cache.has(key)){cache.set(key,{cv:bmp});if(cache.size>180)cache.delete(cache.keys().next().value);}});}return;}
   if(!sprite){const cv=document.createElement('canvas');cv.width=Math.ceil(width*density);cv.height=Math.ceil(l.height*density);/* Handy-Messung 2026-09-27: willReadFrequently – normalizeArt liest zurück, ohne GPU-Stillstand */const mc=cv.getContext('2d',{willReadFrequently:true});mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
    for(let i=0;i<3;i++){const left=Math.round((l.world[i]-l.world[0])*density),right=Math.round((l.world[i+1]-l.world[0])*density);mc.drawImage(a.image,l.source[i],a.y,l.source[i+1]-l.source[i],a.h,left,0,right-left,cv.height);}
    normalizeArt(cv,true);sprite={cv};cache.set(key,sprite);if(cache.size>180)cache.delete(cache.keys().next().value);
